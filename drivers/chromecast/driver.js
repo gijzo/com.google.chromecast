@@ -3,21 +3,28 @@ var ytdl = require('ytdl-core')
 var ytdlUtil = require('ytdl-core/lib/util')
 var ChromecastAPI = require('chromecast-api')
 var devices = []
+var devices_data = {}
+
 exports.init = function(devices, callback) {
 	// Homey.log('init', devices)
+    devices.forEach(initDevice)
 	discoverChromecasts()
+    callback()
+}
+
+exports.added = function(device_data, callback) {
+	initDevice(device_data)
 	callback(null, true)
 }
 
-exports.capabilities = {}
 exports.pair = function(socket) {
 	socket.on('list_devices', function(data, callback) {
 		callback(null, devices.map(function(chromecast) {
+			var name = chromecast.config.name
 			return {
-				name: chromecast.config.name,
+				name: name,
 				data: {
-					id: chromecast.config.name,
-					ip: chromecast.host
+					id: name
 				}
 			}
 		}))
@@ -33,17 +40,32 @@ function discoverChromecasts(resetList) {
 		}
 		devices.push(device)
 		device.on('status', function(status) {
-			Homey.manager('flow').trigger('chromecastStatusChanged', {
+			const tokens = {
 				status: status.playerState
+			}
+			getDeviceData(device.config.name, function (device_data) {
+				Homey.manager('flow').triggerDevice('chromecastStatusChanged', tokens, {}, device_data)
 			})
+			Homey.manager('api').realtime('status', {
+				name: device.config.name,
+				status: tokens.status
+			})
+		})
+		getDeviceData(device.config.name, function (device_data) {
+			exports.setAvailable(device_data)
 		})
 		// Homey.log('devices', devices)
 	})
 	// Homey.log('devices', devices)
 	setTimeout(function() {
-		// rediscover devices
-		discoverChromecasts(true)
-	}, 600000) // 10 min
+		for (var name in devices_data) {
+			if (!getDeviceByName(name)) {
+				exports.setUnavailable(devices_data[name], 'Offline')
+			}
+		}
+	}, 15000)
+	// rediscover devices every 10 mins
+	setTimeout(discoverChromecasts, 600000, true)
 }
 
 exports.playVideo = function(deviceName, videoUrl, callback) {
@@ -120,10 +142,27 @@ deviceActions.forEach(function(action) {
 	}
 })
 
-function getDevice(deviceName, success, error) {
-	var device = devices.filter(function(device) {
+function initDevice(device_data) {
+	devices_data[device_data.id] = device_data
+}
+
+function getDeviceByName(deviceName) {
+	return devices.filter(function(device) {
 		return device.config && device.config.name === deviceName
 	})[0]
+}
+
+function getDevice(deviceName, success, error) {
+	var device = getDeviceByName(deviceName)
+	if (device) {
+		success(device)
+	} else if (error) {
+		error(new Error('Device ' + deviceName + 'not found'))
+	}
+}
+
+function getDeviceData(deviceName, success, error) {
+	var device = devices_data[deviceName]
 	if (device) {
 		success(device)
 	} else if (error) {
