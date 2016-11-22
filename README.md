@@ -1,1 +1,1 @@
-Send any supported video to a Chromecast device from the flow editor.
+Cast a YouTube video, a regular video or a webpage to a Chromecast device.
