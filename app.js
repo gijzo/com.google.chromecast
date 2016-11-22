@@ -24,8 +24,8 @@ class App {
 		// Catch all errors. Note: this should be removed as soon as possible by fixing the dependencies
 		// This is NOT recommended to do in an app
 		process.removeAllListeners('uncaughtException');
-		process.on('uncaughtException', ( stack ) => {
-			console.log('uncaughtException', stack )
+		process.on('uncaughtException', ( e ) => {
+			console.log('uncaughtException', e.stack )
 		})
 
 	}
