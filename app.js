@@ -21,6 +21,13 @@ class App {
 		Homey.manager('flow')
 			.on('action.castYouTube.youtube_id.autocomplete', this._onFlowActionCastYouTubeAutocomplete.bind(this));
 
+		// Catch all errors. Note: this should be removed as soon as possible by fixing the dependencies
+		// This is NOT recommended to do in an app
+		process.removeAllListeners('uncaughtException');
+		process.on('uncaughtException', ( stack ) => {
+			console.log('uncaughtException', stack )
+		})
+
 	}
 
 	_onFlowActionCastYouTubeAutocomplete( callback, args ) {
