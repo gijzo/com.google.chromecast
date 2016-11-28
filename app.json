@@ -36,7 +36,32 @@
 				"large": "./drivers/chromecast/assets/images/large.jpg",
 				"small": "./drivers/chromecast/assets/images/small.jpg"
 			},
-			"class": "other",
+			"class": "speaker",
+			"capabilities": [ ],
+			"pair": [
+				{
+					"id": "list_chromecasts",
+					"template": "list_devices",
+					"navigation": {
+						"next": "add_chromecasts"
+					}
+				},
+				{
+					"id": "add_chromecasts",
+					"template": "add_devices"
+				}
+			]
+		},
+		{
+			"id": "chromecast_audio",
+			"name": {
+				"en": "Chromecast Audio"
+			},
+			"images": {
+				"large": "./drivers/chromecast/assets/images/large.jpg",
+				"small": "./drivers/chromecast/assets/images/small.jpg"
+			},
+			"class": "speaker",
 			"capabilities": [ ],
 			"pair": [
 				{
@@ -114,6 +139,27 @@
 						"type": "text",
 						"placeholder": {
 							"en": "https://website.com/video.mp4"
+						}
+					}
+				]
+			},
+			{
+				"id": "castAudio",
+				"title": {
+					"en": "Cast a audio URL",
+					"nl": "Cast een audio URL"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_id=chromecast_audio"
+					},
+					{
+						"name": "url",
+						"type": "text",
+						"placeholder": {
+							"en": "https://website.com/audio.mp3"
 						}
 					}
 				]

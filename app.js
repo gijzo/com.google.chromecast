@@ -1,15 +1,34 @@
 'use strict'
 
-const YouTube = require('youtube-node');
+const events				= require('events');
+
+const YouTube 				= require('youtube-node');
+const mdns 					= require('mdns-js');
 
 const maxSearchResults = 5;
 
-class App {
+class App extends events.EventEmitter {
 
 	constructor() {
+		super();
+
 		this.init = this._onInit.bind(this);
 	}
 
+	/*
+		Discovery
+	*/
+	_onBrowserReady() {
+		this._browser.discover();
+	}
+
+	_onBrowserUpdate( device ) {
+		this.emit( 'mdns_device', device );
+	}
+
+	/*
+		Generic
+	*/
 	_onInit() {
 
 		console.log(`${Homey.manifest.id} running...`);
@@ -21,12 +40,13 @@ class App {
 		Homey.manager('flow')
 			.on('action.castYouTube.youtube_id.autocomplete', this._onFlowActionCastYouTubeAutocomplete.bind(this));
 
-		// Catch all errors. Note: this should be removed as soon as possible by fixing the dependencies
-		// This is NOT recommended to do in an app
-		process.removeAllListeners('uncaughtException');
-		process.on('uncaughtException', ( e ) => {
-			console.log('uncaughtException', e.stack )
-		})
+		/*
+			Discovery
+		*/
+		this._browser = mdns.createBrowser( mdns.tcp('googlecast') );
+		this._browser
+			.on('ready', this._onBrowserReady.bind(this))
+			.on('update', this._onBrowserUpdate.bind(this))
 
 	}
 
