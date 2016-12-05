@@ -1,2 +1,4 @@
 # client id & secret
 env.json
+.idea
+.ds_store

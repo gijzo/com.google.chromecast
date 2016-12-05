@@ -37,7 +37,10 @@
 				"small": "./drivers/chromecast/assets/images/small.jpg"
 			},
 			"class": "speaker",
-			"capabilities": [ ],
+			"capabilities": [
+				"volume_mute",
+				"volume_set"
+			],
 			"pair": [
 				{
 					"id": "list_chromecasts",
@@ -62,7 +65,10 @@
 				"small": "./drivers/chromecast/assets/images/small.jpg"
 			},
 			"class": "speaker",
-			"capabilities": [ ],
+			"capabilities": [
+				"volume_mute",
+				"volume_set"
+			],
 			"pair": [
 				{
 					"id": "list_chromecasts",
@@ -161,6 +167,186 @@
 						"placeholder": {
 							"en": "https://website.com/audio.mp3"
 						}
+					}
+				]
+			},
+			{
+				"id": "setVolume",
+				"title": {
+					"en": "Set volume"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "level",
+						"type": "range",
+						"min": 0,
+						"max": 1,
+						"step": 0.01,
+						"labelMultiplier": 100,
+						"label": "%",
+						"placeholder": {
+							"en": "Volume level"
+						}
+					}
+				]
+			},
+			{
+				"id": "setVolume",
+				"title": {
+					"en": "Set volume"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "level",
+						"type": "range",
+						"min": 0,
+						"max": 1,
+						"step": 0.01,
+						"labelMultiplier": 100,
+						"label": "%",
+						"placeholder": {
+							"en": "Volume level"
+						}
+					}
+				]
+			},
+			{
+				"id": "mute",
+				"title": {
+					"en": "Mute"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "unmute",
+				"title": {
+					"en": "Unmute"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "mute",
+				"title": {
+					"en": "Mute"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "unmute",
+				"title": {
+					"en": "Unmute"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "play",
+				"title": {
+					"en": "Play"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "pause",
+				"title": {
+					"en": "Pause"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "stop",
+				"title": {
+					"en": "Stop"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "play",
+				"title": {
+					"en": "Play"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "pause",
+				"title": {
+					"en": "Pause"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "stop",
+				"title": {
+					"en": "Stop"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
 					}
 				]
 			}
