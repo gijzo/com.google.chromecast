@@ -2,3 +2,4 @@
 env.json
 .idea
 .ds_store
+/node_modules/ytdl-core/test/

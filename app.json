@@ -150,6 +150,27 @@
 				]
 			},
 			{
+				"id": "castYouTube",
+				"title": {
+					"en": "Cast a YouTube video",
+					"nl": "Cast een YouTube video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_id=chromecast_audio"
+					},
+					{
+						"name": "youtube_id",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a YouTube video..."
+						}
+					}
+				]
+			},
+			{
 				"id": "castAudio",
 				"title": {
 					"en": "Cast a audio URL",

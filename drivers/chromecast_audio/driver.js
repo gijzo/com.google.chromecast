@@ -1,6 +1,7 @@
 'use strict';
 
 const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
+const Youtube = require('castv2-youtube').Youtube;
 
 const Driver = require('../../lib/Driver.js');
 
@@ -10,9 +11,10 @@ class DriverChromecastAudio extends Driver {
 		super();
 
 		this._id = 'chromecast_audio';
-		this._txtMd = 'Chromecast Audio';
+		this._txtMd = ['Chromecast Audio', 'Google Cast Group'];
 
 		Homey.manager('flow')
+			.on('action.castYouTube', this._onFlowActionCastYouTube.bind(this))
 			.on('action.castAudio', this._onFlowActionCastAudio.bind(this))
 			.on('action.setVolume', this._onFlowActionSetVolume.bind(this))
 			.on('action.mute', this._onFlowActionMute.bind(this, true))
@@ -20,6 +22,18 @@ class DriverChromecastAudio extends Driver {
 			.on('action.play', this._onFlowActionPlay.bind(this))
 			.on('action.pause', this._onFlowActionPause.bind(this))
 			.on('action.stop', this._onFlowActionStop.bind(this));
+	}
+
+	/*
+	 Flow
+	 */
+	_onFlowActionCastYouTube(callback, args) {
+		this.log('_onFlowActionCastYouTube');
+
+		let device = this.getDevice(args.chromecast);
+		if (device instanceof Error) return callback(device);
+
+		this.castYoutube(device, args.youtube_id.id, callback);
 	}
 
 	_onFlowActionCastAudio(callback, args) {
@@ -76,18 +90,41 @@ class DriverChromecastAudio extends Driver {
 		this.stop(device, (err, result) => callback(err, result));
 	}
 
-	castUrl(device, url, callback) {
-		this.getApplication(device, DefaultMediaReceiver, (err, player) => {
-			if (err) return callback(err);
+	castYoutube(device, youtubeId, callback) {
+		this.log('castYoutube');
 
-			player.load({
-				contentId: this.sanitizeUrl(url)
-			}, {
-				autoplay: true
-			}, (err, status) => {
-				if (err) return callback(err);
-				callback();
-			});
+		this.getApplication(device, Youtube).then((player) => {
+			player.load(
+				youtubeId,
+				{
+					targetAudioBitrate: 192,
+					contentType: 'audio/',
+					autoplay: true,
+				},
+				callback
+			);
+		}).catch(err => {
+			callback(err || new Error('Could not cast url'));
+		});
+	}
+
+	castUrl(device, url, callback) {
+		this.getApplication(device, DefaultMediaReceiver).then((player) => {
+			player.load(
+				{
+					contentId: this.sanitizeUrl(url),
+				},
+				{
+					autoplay: true
+				},
+				(err, status) => {
+					console.log('castUrl', err, status);
+					if (err) return callback(err);
+					callback();
+				}
+			);
+		}).catch(err => {
+			callback(err || new Error('Could not cast url'));
 		});
 	}
 

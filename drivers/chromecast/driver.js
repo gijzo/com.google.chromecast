@@ -1,7 +1,10 @@
 'use strict';
 
+const request = require('request');
+
 const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
 const Web = require('castv2-web').Web;
+const Youtube = require('castv2-youtube').Youtube;
 
 Web.APP_ID = '909CFFC5';
 Web.APP_URN = 'com.athom.chromecast';
@@ -14,8 +17,7 @@ class DriverChromecast extends Driver {
 		super();
 
 		this._id = 'chromecast';
-		this._txtMd = 'Chromecast';
-		this.player = null;
+		this._txtMd = ['Chromecast', 'Chromecast Ultra'];
 
 		/*
 		 Flow
@@ -111,43 +113,54 @@ class DriverChromecast extends Driver {
 	castYoutube(device, youtubeId, callback) {
 		this.log('castYoutube');
 
-		this.getApplication(device, Web, (err, player) => {
-			if (err) return callback(err);
-
-			player.web.request({
-				command: 'loadYoutube',
-				args: {
-					youtubeId: youtubeId
-				}
-			});
-
-			return callback();
+		this.getApplication(device, Youtube).then((player) => {
+			player.load(
+				youtubeId,
+				{
+					targetResolution: 1080,
+					autoplay: true,
+				},
+				callback
+			);
+		}).catch(err => {
+			callback(err || new Error('Could not cast url'));
 		});
 	}
 
 	castVideo(device, videoUrl, callback) {
 		this.log('castVideo');
 
-		this.getApplication(device, DefaultMediaReceiver, (err, player) => {
-			if (err) return callback(err);
+		const url = this.sanitizeUrl(videoUrl);
 
-			player.load({
-				contentId: this.sanitizeUrl(videoUrl),
-			}, {
-				autoplay: true,
-			}, (err, status) => {
-				if (err) return callback(err);
-				callback();
+		request(url, { method: 'HEAD' }, (err, res, body) => {
+			if (err) return callback(err);
+			if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
+
+			this.getApplication(device, DefaultMediaReceiver).then((player) => {
+				player.load(
+					{
+						contentId: url,
+						contentType: res.headers['content-type'],
+					},
+					{
+						autoplay: true,
+					},
+					(err, status) => {
+						if (err) return callback(err);
+						callback();
+					}
+				);
+			}).catch(err => {
+				callback(err || new Error('Could not cast url'));
 			});
 		});
+
 	}
 
 	castUrl(device, url, callback) {
 		this.log('_onFlowActionStop');
 
-		this.getApplication(device, Web, (err, player) => {
-			if (err) return callback(err);
-
+		this.getApplication(device, Web).then((player) => {
 			player.web.request({
 				command: 'loadUrl',
 				args: {
@@ -156,6 +169,8 @@ class DriverChromecast extends Driver {
 			});
 
 			return callback();
+		}).catch(err => {
+			callback(err || new Error('Could not cast url'));
 		});
 	}
 }
