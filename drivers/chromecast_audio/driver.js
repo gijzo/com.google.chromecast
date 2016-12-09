@@ -1,5 +1,7 @@
 'use strict';
 
+const request = require('request');
+
 const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
 const Youtube = require('castv2-youtube').Youtube;
 
@@ -108,23 +110,33 @@ class DriverChromecastAudio extends Driver {
 		});
 	}
 
-	castUrl(device, url, callback) {
-		this.getApplication(device, DefaultMediaReceiver).then((player) => {
-			player.load(
-				{
-					contentId: this.sanitizeUrl(url),
-				},
-				{
-					autoplay: true
-				},
-				(err, status) => {
-					console.log('castUrl', err, status);
-					if (err) return callback(err);
-					callback();
-				}
-			);
-		}).catch(err => {
-			callback(err || new Error('Could not cast url'));
+	castUrl(device, videoUrl, callback) {
+		this.log('castUrl');
+
+		const url = this.sanitizeUrl(videoUrl);
+
+		request(url, { method: 'HEAD' }, (err, res) => {
+			if (err) return callback(err);
+			if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
+
+			this.getApplication(device, DefaultMediaReceiver).then((player) => {
+				player.load(
+					{
+						contentId: url,
+						contentType: res.headers['content-type'],
+					},
+					{
+						autoplay: true,
+					},
+					(err) => {
+						console.log('castUrl', err);
+						if (err) return callback(err);
+						callback();
+					}
+				);
+			}).catch(err => {
+				callback(err || new Error('Could not cast url'));
+			});
 		});
 	}
 

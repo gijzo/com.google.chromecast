@@ -6,7 +6,7 @@ const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
 const Web = require('castv2-web').Web;
 const Youtube = require('castv2-youtube').Youtube;
 
-Web.APP_ID = '909CFFC5';
+Web.APP_ID = '57F7BD22'; // '909CFFC5'; FIXME enable
 Web.APP_URN = 'com.athom.chromecast';
 
 const Driver = require('../../lib/Driver.js');
@@ -113,18 +113,18 @@ class DriverChromecast extends Driver {
 	castYoutube(device, youtubeId, callback) {
 		this.log('castYoutube');
 
-		this.getApplication(device, Youtube).then((player) => {
-			player.load(
-				youtubeId,
-				{
-					targetResolution: 1080,
+		this.getApplication(device, Web).then((player) => {
+			player.web.request({
+				command: 'loadYoutube',
+				args: {
+					youtubeId: youtubeId,
 					autoplay: true,
-				},
-				callback
-			);
+				}
+			}, callback);
 		}).catch(err => {
 			callback(err || new Error('Could not cast url'));
 		});
+
 	}
 
 	castVideo(device, videoUrl, callback) {
@@ -132,7 +132,7 @@ class DriverChromecast extends Driver {
 
 		const url = this.sanitizeUrl(videoUrl);
 
-		request(url, { method: 'HEAD' }, (err, res, body) => {
+		request(url, { method: 'HEAD' }, (err, res) => {
 			if (err) return callback(err);
 			if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
 
@@ -145,7 +145,7 @@ class DriverChromecast extends Driver {
 					{
 						autoplay: true,
 					},
-					(err, status) => {
+					(err) => {
 						if (err) return callback(err);
 						callback();
 					}
@@ -166,7 +166,7 @@ class DriverChromecast extends Driver {
 				args: {
 					url: this.sanitizeUrl(url),
 				},
-			});
+			}, callback);
 
 			return callback();
 		}).catch(err => {
