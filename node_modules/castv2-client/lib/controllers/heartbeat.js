@@ -27,7 +27,7 @@ function HeartbeatController(client, sourceId, destinationId) {
     self.removeListener('message', onmessage);
     self.stop();
   }
-  
+
 }
 
 util.inherits(HeartbeatController, JsonController);

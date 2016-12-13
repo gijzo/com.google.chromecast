@@ -39,7 +39,8 @@ class App extends events.EventEmitter {
 		this._youTube.addParam('type', 'video');
 
 		Homey.manager('flow')
-			.on('action.castYouTube.youtube_id.autocomplete', this._onFlowActionCastYouTubeAutocomplete.bind(this));
+			.on('action.castYouTube.youtube_id.autocomplete', this._onFlowActionCastYouTubeAutocomplete.bind(this))
+			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this._onFlowActionCastYouTubePlaylistAutocomplete.bind(this));
 
 		/*
 		 Discovery
@@ -53,19 +54,36 @@ class App extends events.EventEmitter {
 
 	_onFlowActionCastYouTubeAutocomplete(callback, args) {
 
-		this._youTube.search(args.query, maxSearchResults, (err, result) => {
+		this._youTube.search(args.query, maxSearchResults, { type: 'video' }, (err, result) => {
 			if (err) return callback(err);
 
-			var videos = [];
-			result.items.forEach(function (video) {
-				videos.push({
+			const videos = result.items.map((video) => {
+				return {
 					id: video.id.videoId,
 					name: video.snippet.title,
 					image: video.snippet.thumbnails.default.url,
-				});
+				};
 			});
 
 			callback(null, videos);
+		});
+
+	}
+
+	_onFlowActionCastYouTubePlaylistAutocomplete(callback, args) {
+
+		this._youTube.search(args.query, maxSearchResults, { type: 'playlist' }, (err, result) => {
+			if (err) return callback(err);
+
+			const playlists = result.items.map((playlist) => {
+				return {
+					id: playlist.id.playlistId,
+					name: playlist.snippet.title,
+					image: playlist.snippet.thumbnails.default.url,
+				};
+			});
+
+			callback(null, playlists);
 		});
 
 	}

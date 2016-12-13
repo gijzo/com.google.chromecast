@@ -96,13 +96,34 @@
 					{
 						"name": "chromecast",
 						"type": "device",
-						"filter": "driver_id=chromecast"
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
 					},
 					{
 						"name": "youtube_id",
 						"type": "autocomplete",
 						"placeholder": {
 							"en": "Find a YouTube video..."
+						}
+					}
+				]
+			},
+			{
+				"id": "castYouTubePlaylist",
+				"title": {
+					"en": "Cast a YouTube playlist",
+					"nl": "Cast een YouTube playlist"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "youtube_playlist_id",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a YouTube playlist..."
 						}
 					}
 				]
@@ -117,7 +138,7 @@
 					{
 						"name": "chromecast",
 						"type": "device",
-						"filter": "driver_id=chromecast"
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
 					},
 					{
 						"name": "url",
@@ -138,7 +159,7 @@
 					{
 						"name": "chromecast",
 						"type": "device",
-						"filter": "driver_id=chromecast"
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
 					},
 					{
 						"name": "url",
@@ -146,6 +167,190 @@
 						"placeholder": {
 							"en": "https://website.com/video.mp4"
 						}
+					}
+				]
+			},
+			{
+				"id": "setVolume",
+				"title": {
+					"en": "Set volume"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "level",
+						"type": "range",
+						"min": 0,
+						"max": 1,
+						"step": 0.01,
+						"labelMultiplier": 100,
+						"label": "%",
+						"placeholder": {
+							"en": "Volume level"
+						}
+					}
+				]
+			},
+			{
+				"id": "mute",
+				"title": {
+					"en": "Mute"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "unmute",
+				"title": {
+					"en": "Unmute"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "play",
+				"title": {
+					"en": "Play"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "pause",
+				"title": {
+					"en": "Pause"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "previous",
+				"title": {
+					"en": "Previous video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "next",
+				"title": {
+					"en": "Next video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "stop",
+				"title": {
+					"en": "Stop"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "shuffle",
+				"title": {
+					"en": "Set Shuffle"
+				},
+				"hint": {
+					"en": "Set youtube playlists to shuffle videos. This setting will apply to all future youtube playlists."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off"
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"id": "loop",
+				"title": {
+					"en": "Set Loop"
+				},
+				"hint": {
+					"en": "Set youtube videos to loop. This setting will apply to all future youtube videos and playlists."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off"
+								}
+							}
+						]
 					}
 				]
 			},
@@ -159,13 +364,34 @@
 					{
 						"name": "chromecast",
 						"type": "device",
-						"filter": "driver_id=chromecast_audio"
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
 					},
 					{
 						"name": "youtube_id",
 						"type": "autocomplete",
 						"placeholder": {
 							"en": "Find a YouTube video..."
+						}
+					}
+				]
+			},
+			{
+				"id": "castYouTubePlaylist",
+				"title": {
+					"en": "Cast a YouTube playlist",
+					"nl": "Cast een YouTube playlist"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "youtube_playlist_id",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a YouTube playlist..."
 						}
 					}
 				]
@@ -180,7 +406,7 @@
 					{
 						"name": "chromecast",
 						"type": "device",
-						"filter": "driver_id=chromecast_audio"
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
 					},
 					{
 						"name": "url",
@@ -200,31 +426,6 @@
 					{
 						"name": "chromecast",
 						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					},
-					{
-						"name": "level",
-						"type": "range",
-						"min": 0,
-						"max": 1,
-						"step": 0.01,
-						"labelMultiplier": 100,
-						"label": "%",
-						"placeholder": {
-							"en": "Volume level"
-						}
-					}
-				]
-			},
-			{
-				"id": "setVolume",
-				"title": {
-					"en": "Set volume"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
 						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
 					},
 					{
@@ -238,32 +439,6 @@
 						"placeholder": {
 							"en": "Volume level"
 						}
-					}
-				]
-			},
-			{
-				"id": "mute",
-				"title": {
-					"en": "Mute"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "unmute",
-				"title": {
-					"en": "Unmute"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
 					}
 				]
 			},
@@ -307,6 +482,32 @@
 				]
 			},
 			{
+				"id": "previous",
+				"title": {
+					"en": "Previous video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "next",
+				"title": {
+					"en": "Next video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
 				"id": "pause",
 				"title": {
 					"en": "Pause"
@@ -333,41 +534,70 @@
 				]
 			},
 			{
-				"id": "play",
+				"id": "shuffle",
 				"title": {
-					"en": "Play"
+					"en": "Set Shuffle"
+				},
+				"hint": {
+					"en": "Set youtube playlists to shuffle videos. This setting will apply to all future youtube playlists."
 				},
 				"args": [
 					{
 						"name": "chromecast",
 						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off"
+								}
+							}
+						]
 					}
 				]
 			},
 			{
-				"id": "pause",
+				"id": "loop",
 				"title": {
-					"en": "Pause"
+					"en": "Set Loop"
+				},
+				"hint": {
+					"en": "Set youtube videos to loop. This setting will apply to all future youtube videos and playlists."
 				},
 				"args": [
 					{
 						"name": "chromecast",
 						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "stop",
-				"title": {
-					"en": "Stop"
-				},
-				"args": [
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
 					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off"
+								}
+							}
+						]
 					}
 				]
 			}
