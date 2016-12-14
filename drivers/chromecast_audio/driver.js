@@ -12,7 +12,7 @@ class DriverChromecastAudio extends Driver {
 		super();
 
 		this._id = 'chromecast_audio';
-		this._txtMd = ['Chromecast Audio', 'Google Cast Group'];
+		this._txtMd = ['Chromecast Audio'];
 
 		Homey.manager('flow')
 			.on('action.castAudio', this._onFlowActionCastAudio.bind(this));
