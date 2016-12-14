@@ -4,10 +4,12 @@
 	"compatibility": ">=1.0.0",
 	"category": "video",
 	"name": {
-		"en": "Google Chromecast"
+		"en": "Google Chromecast",
+		"nl": "Google Chromecast"
 	},
 	"description": {
-		"en": "Google Chromecast for Homey"
+		"en": "Google Chromecast and Chromecast audio support for Homey",
+		"nl": "Google Chromecast en Chromecast audio ondersteuning voor Homey"
 	},
 	"author": {
 		"name": "Athom B.V.",
@@ -102,7 +104,8 @@
 						"name": "youtube_id",
 						"type": "autocomplete",
 						"placeholder": {
-							"en": "Find a YouTube video..."
+							"en": "Find a YouTube video...",
+							"nl": "Zoek een YouTube video..."
 						}
 					}
 				]
@@ -123,7 +126,8 @@
 						"name": "youtube_playlist_id",
 						"type": "autocomplete",
 						"placeholder": {
-							"en": "Find a YouTube playlist..."
+							"en": "Find a YouTube playlist...",
+							"nl": "Zoek een YouTube afspeellijst..."
 						}
 					}
 				]
@@ -173,7 +177,8 @@
 			{
 				"id": "setVolume",
 				"title": {
-					"en": "Set volume"
+					"en": "Set volume",
+					"nl": "Zet volume"
 				},
 				"args": [
 					{
@@ -190,7 +195,8 @@
 						"labelMultiplier": 100,
 						"label": "%",
 						"placeholder": {
-							"en": "Volume level"
+							"en": "Volume level",
+							"nl": "Volume niveau"
 						}
 					}
 				]
@@ -198,7 +204,8 @@
 			{
 				"id": "mute",
 				"title": {
-					"en": "Mute"
+					"en": "Mute",
+					"nl": "Geluid dempen"
 				},
 				"args": [
 					{
@@ -211,7 +218,8 @@
 			{
 				"id": "unmute",
 				"title": {
-					"en": "Unmute"
+					"en": "Unmute",
+					"nl": "Geluid aan"
 				},
 				"args": [
 					{
@@ -224,7 +232,8 @@
 			{
 				"id": "play",
 				"title": {
-					"en": "Play"
+					"en": "Play",
+					"nl": "Speel af"
 				},
 				"args": [
 					{
@@ -237,7 +246,8 @@
 			{
 				"id": "pause",
 				"title": {
-					"en": "Pause"
+					"en": "Pause",
+					"nl": "Pauzeer"
 				},
 				"args": [
 					{
@@ -250,7 +260,8 @@
 			{
 				"id": "previous",
 				"title": {
-					"en": "Previous video"
+					"en": "Previous video",
+					"nl": "Vorige video"
 				},
 				"args": [
 					{
@@ -263,7 +274,8 @@
 			{
 				"id": "next",
 				"title": {
-					"en": "Next video"
+					"en": "Next video",
+					"nl": "Volgende video"
 				},
 				"args": [
 					{
@@ -276,7 +288,8 @@
 			{
 				"id": "stop",
 				"title": {
-					"en": "Stop"
+					"en": "Stop",
+					"nl": "Stop"
 				},
 				"args": [
 					{
@@ -289,10 +302,12 @@
 			{
 				"id": "shuffle",
 				"title": {
-					"en": "Set Shuffle"
+					"en": "Set Shuffle",
+					"nl": "Zet Shuffle"
 				},
 				"hint": {
-					"en": "Set youtube playlists to shuffle videos. This setting will apply to all future youtube playlists."
+					"en": "Set YouTube playlists to shuffle videos. This setting will apply to all future YouTube playlists.",
+					"nl": "Zet YouTube afspeellijsten op shuffle. Deze instelling zal worden toegepast op alle toekomstige YouTube afspeellijsten die worden afgespeeld."
 				},
 				"args": [
 					{
@@ -307,13 +322,15 @@
 							{
 								"id": "on",
 								"label": {
-									"en": "On"
+									"en": "On",
+									"nl": "Aan"
 								}
 							},
 							{
 								"id": "off",
 								"label": {
-									"en": "Off"
+									"en": "Off",
+									"nl": "Uit"
 								}
 							}
 						]
@@ -323,10 +340,12 @@
 			{
 				"id": "loop",
 				"title": {
-					"en": "Set Loop"
+					"en": "Set Loop",
+					"nl": "Zet Herhalen"
 				},
 				"hint": {
-					"en": "Set youtube videos to loop. This setting will apply to all future youtube videos and playlists."
+					"en": "Set YouTube videos to loop. This setting will apply to all future YouTube videos and playlists.",
+					"nl": "Zet YouTube videos op herhalen. Deze instelling zal worden toegepast op alle toekomstige YouTube videos die worden afgespeeld."
 				},
 				"args": [
 					{
@@ -341,13 +360,15 @@
 							{
 								"id": "on",
 								"label": {
-									"en": "On"
+									"en": "On",
+									"nl": "Aan"
 								}
 							},
 							{
 								"id": "off",
 								"label": {
-									"en": "Off"
+									"en": "Off",
+									"nl": "Uit"
 								}
 							}
 						]
@@ -370,7 +391,8 @@
 						"name": "youtube_id",
 						"type": "autocomplete",
 						"placeholder": {
-							"en": "Find a YouTube video..."
+							"en": "Find a YouTube video...",
+							"nl": "Zoek een YouTube video..."
 						}
 					}
 				]
@@ -391,7 +413,8 @@
 						"name": "youtube_playlist_id",
 						"type": "autocomplete",
 						"placeholder": {
-							"en": "Find a YouTube playlist..."
+							"en": "Find a YouTube playlist...",
+							"nl": "Zoek een YouTube afspeellijst..."
 						}
 					}
 				]
@@ -420,7 +443,8 @@
 			{
 				"id": "setVolume",
 				"title": {
-					"en": "Set volume"
+					"en": "Set volume",
+					"nl": "Zet volume"
 				},
 				"args": [
 					{
@@ -437,7 +461,8 @@
 						"labelMultiplier": 100,
 						"label": "%",
 						"placeholder": {
-							"en": "Volume level"
+							"en": "Volume level",
+							"nl": "Volume niveau"
 						}
 					}
 				]
@@ -445,7 +470,8 @@
 			{
 				"id": "mute",
 				"title": {
-					"en": "Mute"
+					"en": "Mute",
+					"nl": "Geluid dempen"
 				},
 				"args": [
 					{
@@ -458,7 +484,8 @@
 			{
 				"id": "unmute",
 				"title": {
-					"en": "Unmute"
+					"en": "Unmute",
+					"nl": "Geluid aan"
 				},
 				"args": [
 					{
@@ -471,33 +498,8 @@
 			{
 				"id": "play",
 				"title": {
-					"en": "Play"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
-					}
-				]
-			},
-			{
-				"id": "previous",
-				"title": {
-					"en": "Previous video"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
-					}
-				]
-			},
-			{
-				"id": "next",
-				"title": {
-					"en": "Next video"
+					"en": "Play",
+					"nl": "Speel af"
 				},
 				"args": [
 					{
@@ -510,7 +512,36 @@
 			{
 				"id": "pause",
 				"title": {
-					"en": "Pause"
+					"en": "Pause",
+					"nl": "Pauzeer"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "previous",
+				"title": {
+					"en": "Previous video",
+					"nl": "Vorige video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "next",
+				"title": {
+					"en": "Next video",
+					"nl": "Volgende video"
 				},
 				"args": [
 					{
@@ -523,7 +554,8 @@
 			{
 				"id": "stop",
 				"title": {
-					"en": "Stop"
+					"en": "Stop",
+					"nl": "Stop"
 				},
 				"args": [
 					{
@@ -536,10 +568,12 @@
 			{
 				"id": "shuffle",
 				"title": {
-					"en": "Set Shuffle"
+					"en": "Set Shuffle",
+					"nl": "Zet Shuffle"
 				},
 				"hint": {
-					"en": "Set youtube playlists to shuffle videos. This setting will apply to all future youtube playlists."
+					"en": "Set youtube playlists to shuffle videos. This setting will apply to all future youtube playlists.",
+					"nl": "Zet YouTube afspeellijsten op shuffle. Deze instelling zal worden toegepast op alle toekomstige YouTube afspeellijsten die worden afgespeeld."
 				},
 				"args": [
 					{
@@ -554,13 +588,15 @@
 							{
 								"id": "on",
 								"label": {
-									"en": "On"
+									"en": "On",
+									"nl": "Aan"
 								}
 							},
 							{
 								"id": "off",
 								"label": {
-									"en": "Off"
+									"en": "Off",
+									"nl": "Uit"
 								}
 							}
 						]
@@ -570,10 +606,12 @@
 			{
 				"id": "loop",
 				"title": {
-					"en": "Set Loop"
+					"en": "Set Loop",
+					"nl": "Zet Herhalen"
 				},
 				"hint": {
-					"en": "Set youtube videos to loop. This setting will apply to all future youtube videos and playlists."
+					"en": "Set youtube videos to loop. This setting will apply to all future youtube videos and playlists.",
+					"nl": "Zet YouTube videos op herhalen. Deze instelling zal worden toegepast op alle toekomstige YouTube videos die worden afgespeeld."
 				},
 				"args": [
 					{
@@ -588,13 +626,15 @@
 							{
 								"id": "on",
 								"label": {
-									"en": "On"
+									"en": "On",
+									"nl": "Aan"
 								}
 							},
 							{
 								"id": "off",
 								"label": {
-									"en": "Off"
+									"en": "Off",
+									"nl": "Uit"
 								}
 							}
 						]
