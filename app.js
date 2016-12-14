@@ -4,6 +4,7 @@ const events = require('events');
 
 const logger = require('homey-log').Log;
 const YouTube = require('youtube-node');
+const getYoutubeId = require('get-youtube-id');
 const mdns = require('mdns-js');
 
 const maxSearchResults = 5;
@@ -54,36 +55,96 @@ class App extends events.EventEmitter {
 
 	_onFlowActionCastYouTubeAutocomplete(callback, args) {
 
-		this._youTube.search(args.query, maxSearchResults, { type: 'video' }, (err, result) => {
-			if (err) return callback(err);
+		Promise.all([
+			new Promise((resolve, reject) => {
+				const youtubeId = getYoutubeId(args.query);
+				if (youtubeId) {
+					this._youTube.getById(youtubeId, (err, result) => {
+						if (err) return reject(err);
 
-			const videos = result.items.map((video) => {
-				return {
-					id: video.id.videoId,
-					name: video.snippet.title,
-					image: video.snippet.thumbnails.default.url,
-				};
-			});
+						const videos = result.items
+							.filter((item) => item.kind === 'youtube#video')
+							.map((video) => {
+								return {
+									id: video.id.videoId,
+									name: video.snippet.title,
+									image: video.snippet.thumbnails.default.url,
+								};
+							});
 
-			callback(null, videos);
+						resolve(videos);
+					})
+				} else {
+					resolve([]);
+				}
+			}),
+			new Promise((resolve, reject) => {
+				this._youTube.search(args.query, maxSearchResults, { type: 'video' }, (err, result) => {
+					if (err) return reject(err);
+
+					const videos = result.items.map((video) => {
+						return {
+							id: video.id.videoId,
+							name: video.snippet.title,
+							image: video.snippet.thumbnails.default.url,
+						};
+					});
+
+					resolve(videos);
+				});
+			})
+		]).then((results) => {
+			callback(null, [].concat.apply([], results));
+		}).catch((err) => {
+			callback(err);
 		});
-
 	}
 
 	_onFlowActionCastYouTubePlaylistAutocomplete(callback, args) {
 
-		this._youTube.search(args.query, maxSearchResults, { type: 'playlist' }, (err, result) => {
-			if (err) return callback(err);
+		Promise.all([
+			new Promise((resolve, reject) => {
+				const youtubePlaylistId = getYoutubeId(args.query);
+				console.log('got playlist id', youtubePlaylistId);
+				if (youtubePlaylistId) {
+					this._youTube.getPlayListsById(youtubePlaylistId, (err, result) => {
+						if (err) return reject(err);
 
-			const playlists = result.items.map((playlist) => {
-				return {
-					id: playlist.id.playlistId,
-					name: playlist.snippet.title,
-					image: playlist.snippet.thumbnails.default.url,
-				};
-			});
+						const videos = result.items
+							.filter((item) => item.kind === 'youtube#video')
+							.map((video) => {
+								return {
+									id: video.id.videoId,
+									name: video.snippet.title,
+									image: video.snippet.thumbnails.default.url,
+								};
+							});
 
-			callback(null, playlists);
+						resolve(videos);
+					})
+				} else {
+					resolve([]);
+				}
+			}),
+			new Promise((resolve, reject) => {
+				this._youTube.search(args.query, maxSearchResults, { type: 'playlist' }, (err, result) => {
+					if (err) return reject(err);
+
+					const playlists = result.items.map((playlist) => {
+						return {
+							id: playlist.id.playlistId,
+							name: playlist.snippet.title,
+							image: playlist.snippet.thumbnails.default.url,
+						};
+					});
+
+					resolve(playlists);
+				});
+			})
+		]).then((results) => {
+			callback(null, [].concat.apply([], results));
+		}).catch((err) => {
+			callback(err);
 		});
 
 	}
