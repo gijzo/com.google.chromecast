@@ -5,6 +5,7 @@ const events = require('events');
 const logger = require('homey-log').Log;
 const YouTube = require('youtube-node');
 const getYoutubeId = require('get-youtube-id');
+const getYoutubePlaylistId = require('get-youtube-playlist-id');
 const mdns = require('mdns-js');
 
 const maxSearchResults = 5;
@@ -104,23 +105,22 @@ class App extends events.EventEmitter {
 
 		Promise.all([
 			new Promise((resolve, reject) => {
-				const youtubePlaylistId = getYoutubeId(args.query);
-				console.log('got playlist id', youtubePlaylistId);
+				const youtubePlaylistId = getYoutubePlaylistId(args.query);
 				if (youtubePlaylistId) {
 					this._youTube.getPlayListsById(youtubePlaylistId, (err, result) => {
 						if (err) return reject(err);
 
-						const videos = result.items
-							.filter((item) => item.kind === 'youtube#video')
-							.map((video) => {
+						const playlists = result.items
+							.filter((item) => item.kind === 'youtube#playlist')
+							.map((playlist) => {
 								return {
-									id: video.id.videoId,
-									name: video.snippet.title,
-									image: video.snippet.thumbnails.default.url,
+									id: playlist.id.playlistId,
+									name: playlist.snippet.title,
+									image: playlist.snippet.thumbnails.default.url,
 								};
 							});
 
-						resolve(videos);
+						resolve(playlists);
 					})
 				} else {
 					resolve([]);
