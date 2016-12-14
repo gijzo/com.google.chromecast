@@ -114,7 +114,7 @@ class App extends events.EventEmitter {
 							.filter((item) => item.kind === 'youtube#playlist')
 							.map((playlist) => {
 								return {
-									id: playlist.id.playlistId,
+									id: playlist.id,
 									name: playlist.snippet.title,
 									image: playlist.snippet.thumbnails.default.url,
 								};
@@ -130,6 +130,7 @@ class App extends events.EventEmitter {
 				this._youTube.search(args.query, maxSearchResults, { type: 'playlist' }, (err, result) => {
 					if (err) return reject(err);
 
+					console.log('playlists', result);
 					const playlists = result.items.map((playlist) => {
 						return {
 							id: playlist.id.playlistId,
