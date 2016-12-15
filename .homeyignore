@@ -1,0 +1,8 @@
+assets/images
+/node_modules/ytdl-core/test/
+/node_modules/protobufjs/docs/
+/node_modules/protobufjs/tests/
+/node_modules/hawk/images/
+/node_modules/hawk/example/
+/node_modules/hawk/test/
+node_modules.bak/

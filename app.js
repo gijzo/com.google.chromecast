@@ -1,79 +1,154 @@
-'use strict'
+'use strict';
 
-var YouTube = require('youtube-node');
-var youTube;
+const events = require('events');
 
-exports.init = function() {
-	
-	youTube = new YouTube();
-	youTube.setKey( Homey.env.YOUTUBE_KEY );
-	youTube.addParam('type', 'video');
-		
-	Homey.manager('flow').on('action.castYouTube', onFlowActionCastYouTube)
-	Homey.manager('flow').on('action.castYouTube.youtube_id.autocomplete', onFlowActionCastYouTubeAutocomplete);
-	Homey.manager('flow').on('action.castVideo', onFlowActionCastVideo)
+const logger = require('homey-log').Log;
+const YouTube = require('youtube-node');
+const getYoutubeId = require('get-youtube-id');
+const getYoutubePlaylistId = require('get-youtube-playlist-id');
+const mdns = require('mdns-js');
 
-	var deviceActions = [
-		'stop',
-		'pause',
-		'unpause',
-		'mute',
-		'unmute'
-	]
-	deviceActions.forEach(function (action) {
-		Homey.manager('flow').on('action.' + action + 'Video', function onFlowActionCastVideo(callback, args) {
-			// Homey.log(action, args)
-			Homey.manager('drivers')
-				.getDriver('chromecast')
-				[action](args.chromecast.id, callback)
-		})
-	})
-	deviceActions = [
-		'seek',
-		'seekTo'
-	]
-	deviceActions.forEach(function (action) {
-		Homey.manager('flow').on('action.' + action + 'Video', function onFlowActionCastVideo(callback, args) {
-			// Homey.log(action, args)
-			Homey.manager('drivers')
-				.getDriver('chromecast')
-				[action](args.chromecast.id, args.time, callback)
-		})
-	})
-	Homey.manager('flow').on('action.setVolumeVideo', function onFlowActionCastVideo(callback, args) {
-		// Homey.log('volume', args)
-		Homey.manager('drivers')
-			.getDriver('chromecast')
-			.setVolume(args.chromecast.id, args.level, callback)
-	})
-}
+const maxSearchResults = 5;
 
-function onFlowActionCastYouTube(callback, args) {
-	Homey.manager('drivers')
-		.getDriver('chromecast')
-		.playVideo(args.chromecast.id, 'https://www.youtube.com/watch?v=' + args.youtube_id.id, callback)
-}
+class App extends events.EventEmitter {
 
-function onFlowActionCastYouTubeAutocomplete( callback, args ){
-	youTube.search(args.query, 5, function(error, result) {
-		if (error) return;
-		
-		var videos = [];
-		result.items.forEach(function(video){
-			videos.push({
-				id		: video.id.videoId,
-				name	: video.snippet.title,
-				image	: video.snippet.thumbnails.default.url
+	constructor() {
+		super();
+
+		this.init = this._onInit.bind(this);
+	}
+
+	/*
+	 Discovery
+	 */
+	_onBrowserReady() {
+		this._browser.discover();
+	}
+
+	_onBrowserUpdate(device) {
+		this.emit('mdns_device', device);
+	}
+
+	/*
+	 Generic
+	 */
+	_onInit() {
+
+		console.log(`${Homey.manifest.id} running...`);
+
+		this._youTube = new YouTube();
+		this._youTube.setKey(Homey.env.YOUTUBE_KEY);
+		this._youTube.addParam('type', 'video');
+
+		Homey.manager('flow')
+			.on('action.castYouTube.youtube_id.autocomplete', this._onFlowActionCastYouTubeAutocomplete.bind(this))
+			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this._onFlowActionCastYouTubePlaylistAutocomplete.bind(this));
+
+		/*
+		 Discovery
+		 */
+		this._browser = mdns.createBrowser(mdns.tcp('googlecast'));
+		this._browser
+			.on('ready', this._onBrowserReady.bind(this))
+			.on('update', this._onBrowserUpdate.bind(this));
+
+	}
+
+	_onFlowActionCastYouTubeAutocomplete(callback, args) {
+
+		Promise.all([
+			new Promise((resolve, reject) => {
+				const youtubeId = getYoutubeId(args.query);
+				if (youtubeId) {
+					this._youTube.getById(youtubeId, (err, result) => {
+						if (err) return reject(err);
+
+						const videos = result.items
+							.filter((item) => item.kind === 'youtube#video')
+							.map((video) => {
+								return {
+									id: video.id.videoId,
+									name: video.snippet.title,
+									image: video.snippet.thumbnails.default.url,
+								};
+							});
+
+						resolve(videos);
+					})
+				} else {
+					resolve([]);
+				}
+			}),
+			new Promise((resolve, reject) => {
+				this._youTube.search(args.query, maxSearchResults, { type: 'video' }, (err, result) => {
+					if (err) return reject(err);
+
+					const videos = result.items.map((video) => {
+						return {
+							id: video.id.videoId,
+							name: video.snippet.title,
+							image: video.snippet.thumbnails.default.url,
+						};
+					});
+
+					resolve(videos);
+				});
 			})
-		})
-					
-		callback( null, videos );
-	});
-	
+		]).then((results) => {
+			callback(null, [].concat.apply([], results));
+		}).catch((err) => {
+			callback(err);
+		});
+	}
+
+	_onFlowActionCastYouTubePlaylistAutocomplete(callback, args) {
+
+		Promise.all([
+			new Promise((resolve, reject) => {
+				const youtubePlaylistId = getYoutubePlaylistId(args.query);
+				if (youtubePlaylistId) {
+					this._youTube.getPlayListsById(youtubePlaylistId, (err, result) => {
+						if (err) return reject(err);
+
+						const playlists = result.items
+							.filter((item) => item.kind === 'youtube#playlist')
+							.map((playlist) => {
+								return {
+									id: playlist.id,
+									name: playlist.snippet.title,
+									image: playlist.snippet.thumbnails.default.url,
+								};
+							});
+
+						resolve(playlists);
+					})
+				} else {
+					resolve([]);
+				}
+			}),
+			new Promise((resolve, reject) => {
+				this._youTube.search(args.query, maxSearchResults, { type: 'playlist' }, (err, result) => {
+					if (err) return reject(err);
+
+					console.log('playlists', result);
+					const playlists = result.items.map((playlist) => {
+						return {
+							id: playlist.id.playlistId,
+							name: playlist.snippet.title,
+							image: playlist.snippet.thumbnails.default.url,
+						};
+					});
+
+					resolve(playlists);
+				});
+			})
+		]).then((results) => {
+			callback(null, [].concat.apply([], results));
+		}).catch((err) => {
+			callback(err);
+		});
+
+	}
 }
 
-function onFlowActionCastVideo(callback, args) {
-	Homey.manager('drivers')
-		.getDriver('chromecast')
-		.playVideo(args.chromecast.id, args.url, callback)
-}
+module.exports = new App();

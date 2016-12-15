@@ -1,17 +1,19 @@
 {
 	"id": "com.google.chromecast",
-	"version": "0.12.1",
-	"compatibility": "0.x || 1.x",
+	"version": "2.0.0",
+	"compatibility": ">=1.0.0",
 	"category": "video",
 	"name": {
-		"en": "Google Chromecast"
+		"en": "Google Chromecast",
+		"nl": "Google Chromecast"
 	},
 	"description": {
-		"en": "Connect Homey with your Google Chromecast to send video to your TV"
+		"en": "Google Chromecast and Chromecast audio support for Homey",
+		"nl": "Google Chromecast en Chromecast audio ondersteuning voor Homey"
 	},
 	"author": {
-		"name": "Emile Nijssen",
-		"website": "http://www.emilenijssen.nl"
+		"name": "Athom B.V.",
+		"website": "https://www.athom.com"
 	},
 	"contributors": {
 		"developers": [
@@ -26,10 +28,6 @@
 		"large": "./assets/images/large.jpg",
 		"small": "./assets/images/small.jpg"
 	},
-	"dependencies": {
-		"ytdl-core": "*",
-		"chromecast-api": "*"
-	},
 	"drivers": [
 		{
 			"id": "chromecast",
@@ -40,8 +38,39 @@
 				"large": "./drivers/chromecast/assets/images/large.jpg",
 				"small": "./drivers/chromecast/assets/images/small.jpg"
 			},
-			"class": "other",
-			"capabilities": [ ],
+			"class": "speaker",
+			"capabilities": [
+				"volume_mute",
+				"volume_set"
+			],
+			"pair": [
+				{
+					"id": "list_chromecasts",
+					"template": "list_devices",
+					"navigation": {
+						"next": "add_chromecasts"
+					}
+				},
+				{
+					"id": "add_chromecasts",
+					"template": "add_devices"
+				}
+			]
+		},
+		{
+			"id": "chromecast_audio",
+			"name": {
+				"en": "Chromecast Audio"
+			},
+			"images": {
+				"large": "./drivers/chromecast/assets/images/large.jpg",
+				"small": "./drivers/chromecast/assets/images/small.jpg"
+			},
+			"class": "speaker",
+			"capabilities": [
+				"volume_mute",
+				"volume_set"
+			],
 			"pair": [
 				{
 					"id": "list_chromecasts",
@@ -58,29 +87,6 @@
 		}
 	],
 	"flow": {
-		"triggers": [
-			{
-				"id": "chromecastStatusChanged",
-				"title": {
-					"en": "Chromecast status changed"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				],
-				"tokens": [
-					{
-						"name": "status",
-						"title": {
-							"en": "Status"
-						}
-					}
-				]
-			}
-		],
 		"actions": [
 			{
 				"id": "castYouTube",
@@ -88,7 +94,6 @@
 					"en": "Cast a YouTube video",
 					"nl": "Cast een YouTube video"
 				},
-				"fluidArgs": true,
 				"args": [
 					{
 						"name": "chromecast",
@@ -99,54 +104,17 @@
 						"name": "youtube_id",
 						"type": "autocomplete",
 						"placeholder": {
-							"en": "Find a YouTube video..."
+							"en": "Find a YouTube video...",
+							"nl": "Zoek een YouTube video..."
 						}
 					}
 				]
 			},
 			{
-				"id": "stopVideo",
+				"id": "castYouTubePlaylist",
 				"title": {
-					"en": "Stop casting"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "pauseVideo",
-				"title": {
-					"en": "Pause"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "unpauseVideo",
-				"title": {
-					"en": "Unpause"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "seekVideo",
-				"title": {
-					"en": "Seek by"
+					"en": "Cast a YouTube playlist",
+					"nl": "Cast een YouTube playlist"
 				},
 				"args": [
 					{
@@ -155,90 +123,21 @@
 						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
 					},
 					{
-						"name": "time",
-						"type": "number",
-						"min": 0,
+						"name": "youtube_playlist_id",
+						"type": "autocomplete",
 						"placeholder": {
-							"en": "seconds"
+							"en": "Find a YouTube playlist...",
+							"nl": "Zoek een YouTube afspeellijst..."
 						}
 					}
 				]
 			},
 			{
-				"id": "seekToVideo",
+				"id": "castUrl",
 				"title": {
-					"en": "Seek to"
+					"en": "Cast a website",
+					"nl": "Cast een webpagina"
 				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					},
-					{
-						"name": "time",
-						"type": "text",
-						"placeholder": {
-							"en": "1:15 or seconds from start"
-						}
-					}
-				]
-			},
-			{
-				"id": "setVolumeVideo",
-				"title": {
-					"en": "Set volume"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					},
-					{
-						"name": "level",
-						"type": "number",
-						"min": 0,
-						"max": 100,
-						"placeholder": {
-							"en": "Volume level %"
-						}
-					}
-				]
-			},
-			{
-				"id": "muteVideo",
-				"title": {
-					"en": "Mute"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "unmuteVideo",
-				"title": {
-					"en": "Unmute"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "castVideo",
-				"title": {
-					"en": "Cast a video URL",
-					"nl": "Cast een video URL"
-				},
-				"fluidArgs": true,
 				"args": [
 					{
 						"name": "chromecast",
@@ -249,8 +148,496 @@
 						"name": "url",
 						"type": "text",
 						"placeholder": {
-							"en": "URL"
+							"en": "https://www.athom.com"
 						}
+					}
+				]
+			},
+			{
+				"id": "castVideo",
+				"title": {
+					"en": "Cast a video URL",
+					"nl": "Cast een video URL"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "url",
+						"type": "text",
+						"placeholder": {
+							"en": "https://website.com/video.mp4"
+						}
+					}
+				]
+			},
+			{
+				"id": "setVolume",
+				"title": {
+					"en": "Set volume",
+					"nl": "Zet volume"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "level",
+						"type": "range",
+						"min": 0,
+						"max": 1,
+						"step": 0.01,
+						"labelMultiplier": 100,
+						"label": "%",
+						"placeholder": {
+							"en": "Volume level",
+							"nl": "Volume niveau"
+						}
+					}
+				]
+			},
+			{
+				"id": "mute",
+				"title": {
+					"en": "Mute",
+					"nl": "Geluid dempen"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "unmute",
+				"title": {
+					"en": "Unmute",
+					"nl": "Geluid aan"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "play",
+				"title": {
+					"en": "Play",
+					"nl": "Speel af"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "pause",
+				"title": {
+					"en": "Pause",
+					"nl": "Pauzeer"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "previous",
+				"title": {
+					"en": "Previous video",
+					"nl": "Vorige video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "next",
+				"title": {
+					"en": "Next video",
+					"nl": "Volgende video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "stop",
+				"title": {
+					"en": "Stop",
+					"nl": "Stop"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					}
+				]
+			},
+			{
+				"id": "shuffle",
+				"title": {
+					"en": "Set Shuffle",
+					"nl": "Zet Shuffle"
+				},
+				"hint": {
+					"en": "Set YouTube playlists to shuffle videos. This setting will apply to all future YouTube playlists.",
+					"nl": "Zet YouTube afspeellijsten op shuffle. Deze instelling zal worden toegepast op alle toekomstige YouTube afspeellijsten die worden afgespeeld."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On",
+									"nl": "Aan"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off",
+									"nl": "Uit"
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"id": "loop",
+				"title": {
+					"en": "Set Loop",
+					"nl": "Zet Herhalen"
+				},
+				"hint": {
+					"en": "Set YouTube videos to loop. This setting will apply to all future YouTube videos and playlists.",
+					"nl": "Zet YouTube videos op herhalen. Deze instelling zal worden toegepast op alle toekomstige YouTube videos die worden afgespeeld."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On",
+									"nl": "Aan"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off",
+									"nl": "Uit"
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"id": "castYouTube",
+				"title": {
+					"en": "Cast a YouTube video",
+					"nl": "Cast een YouTube video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "youtube_id",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a YouTube video...",
+							"nl": "Zoek een YouTube video..."
+						}
+					}
+				]
+			},
+			{
+				"id": "castYouTubePlaylist",
+				"title": {
+					"en": "Cast a YouTube playlist",
+					"nl": "Cast een YouTube playlist"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "youtube_playlist_id",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a YouTube playlist...",
+							"nl": "Zoek een YouTube afspeellijst..."
+						}
+					}
+				]
+			},
+			{
+				"id": "castAudio",
+				"title": {
+					"en": "Cast a audio URL",
+					"nl": "Cast een audio URL"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "url",
+						"type": "text",
+						"placeholder": {
+							"en": "https://website.com/audio.mp3"
+						}
+					}
+				]
+			},
+			{
+				"id": "setVolume",
+				"title": {
+					"en": "Set volume",
+					"nl": "Zet volume"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "level",
+						"type": "range",
+						"min": 0,
+						"max": 1,
+						"step": 0.01,
+						"labelMultiplier": 100,
+						"label": "%",
+						"placeholder": {
+							"en": "Volume level",
+							"nl": "Volume niveau"
+						}
+					}
+				]
+			},
+			{
+				"id": "mute",
+				"title": {
+					"en": "Mute",
+					"nl": "Geluid dempen"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "unmute",
+				"title": {
+					"en": "Unmute",
+					"nl": "Geluid aan"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "play",
+				"title": {
+					"en": "Play",
+					"nl": "Speel af"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "pause",
+				"title": {
+					"en": "Pause",
+					"nl": "Pauzeer"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "previous",
+				"title": {
+					"en": "Previous video",
+					"nl": "Vorige video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "next",
+				"title": {
+					"en": "Next video",
+					"nl": "Volgende video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "stop",
+				"title": {
+					"en": "Stop",
+					"nl": "Stop"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					}
+				]
+			},
+			{
+				"id": "shuffle",
+				"title": {
+					"en": "Set Shuffle",
+					"nl": "Zet Shuffle"
+				},
+				"hint": {
+					"en": "Set youtube playlists to shuffle videos. This setting will apply to all future youtube playlists.",
+					"nl": "Zet YouTube afspeellijsten op shuffle. Deze instelling zal worden toegepast op alle toekomstige YouTube afspeellijsten die worden afgespeeld."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On",
+									"nl": "Aan"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off",
+									"nl": "Uit"
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"id": "loop",
+				"title": {
+					"en": "Set Loop",
+					"nl": "Zet Herhalen"
+				},
+				"hint": {
+					"en": "Set youtube videos to loop. This setting will apply to all future youtube videos and playlists.",
+					"nl": "Zet YouTube videos op herhalen. Deze instelling zal worden toegepast op alle toekomstige YouTube videos die worden afgespeeld."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On",
+									"nl": "Aan"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off",
+									"nl": "Uit"
+								}
+							}
+						]
 					}
 				]
 			}
