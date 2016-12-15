@@ -7,15 +7,15 @@ const Browser = require('castv2-athom-browser').Browser;
 
 const Driver = require('../../lib/Driver.js');
 
+if (Homey.env.DEBUG) {
+	console.log('[Warning] Running Debug Browser receiver');
+	Browser.APP_ID = '57F7BD22';
+}
 
 class DriverChromecast extends Driver {
 
 	constructor() {
 		super();
-
-		if (this.DEVELOPMENT) {
-			Browser.APP_ID = '57F7BD22';
-		}
 
 		this._id = 'chromecast';
 		this._txtMd = ['Chromecast', 'Chromecast Ultra'];
