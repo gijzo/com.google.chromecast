@@ -7,7 +7,7 @@ const Browser = require('castv2-athom-browser').Browser;
 
 const Driver = require('../../lib/Driver.js');
 
-if (Homey.env.DEBUG) {
+if (process.env.DEBUG) {
 	console.log('[Warning] Running Debug Browser receiver');
 	Browser.APP_ID = '57F7BD22';
 }
