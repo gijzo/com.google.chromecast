@@ -63,8 +63,8 @@
 				"en": "Chromecast Audio"
 			},
 			"images": {
-				"large": "./drivers/chromecast/assets/images/large.jpg",
-				"small": "./drivers/chromecast/assets/images/small.jpg"
+				"large": "./drivers/chromecast_audio/assets/images/large.jpg",
+				"small": "./drivers/chromecast_audio/assets/images/small.jpg"
 			},
 			"class": "speaker",
 			"capabilities": [
