@@ -1,6 +1,6 @@
 {
 	"id": "com.google.chromecast",
-	"version": "2.0.8",
+	"version": "2.0.9",
 	"compatibility": ">=1.0.0",
 	"category": "video",
 	"name": {
