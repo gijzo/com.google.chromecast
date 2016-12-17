@@ -35,7 +35,7 @@ class DriverChromecastAudio extends Driver {
 
 		const url = this.sanitizeUrl(videoUrl);
 
-		request(url, { method: 'HEAD' }, (err, res) => {
+		request(url, { method: 'HEAD', timeout: 2000 }, (err, res) => {
 			if (err) return callback(err);
 			if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
 
