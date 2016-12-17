@@ -19,6 +19,7 @@ class DriverChromecast extends Driver {
 
 		this._id = 'chromecast';
 		this._txtMd = ['Chromecast', 'Chromecast Ultra'];
+		this._txtMdBlacklist = ['Google Cast Group', 'Chromecast Audio'];
 
 		/*
 		 Flow

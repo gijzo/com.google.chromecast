@@ -69,7 +69,9 @@ class App extends events.EventEmitter {
 								return {
 									id: video.id.videoId,
 									name: video.snippet.title,
-									image: video.snippet.thumbnails.default.url,
+									image: video.snippet && video.snippet.thumbnails && video.thumbnails.default ?
+										video.snippet.thumbnails.default.url :
+										undefined,
 								};
 							});
 
@@ -87,7 +89,9 @@ class App extends events.EventEmitter {
 						return {
 							id: video.id.videoId,
 							name: video.snippet.title,
-							image: video.snippet.thumbnails.default.url,
+							image: video.snippet && video.snippet.thumbnails && video.thumbnails.default ?
+								video.snippet.thumbnails.default.url :
+								undefined,
 						};
 					});
 
@@ -116,7 +120,9 @@ class App extends events.EventEmitter {
 								return {
 									id: playlist.id,
 									name: playlist.snippet.title,
-									image: playlist.snippet.thumbnails.default.url,
+									image: playlist.snippet && playlist.snippet.thumbnails && playlist.thumbnails.default ?
+										playlist.snippet.thumbnails.default.url :
+										undefined,
 								};
 							});
 
@@ -135,7 +141,9 @@ class App extends events.EventEmitter {
 						return {
 							id: playlist.id.playlistId,
 							name: playlist.snippet.title,
-							image: playlist.snippet.thumbnails.default.url,
+							image: playlist.snippet && playlist.snippet.thumbnails && playlist.thumbnails.default ?
+								playlist.snippet.thumbnails.default.url :
+								undefined,
 						};
 					});
 
