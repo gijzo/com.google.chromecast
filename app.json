@@ -1,6 +1,6 @@
 {
 	"id": "com.google.chromecast",
-	"version": "2.0.11",
+	"version": "2.1.0",
 	"compatibility": ">=1.0.0",
 	"category": "video",
 	"name": {
@@ -133,10 +133,10 @@
 				]
 			},
 			{
-				"id": "castUrl",
+				"id": "castRadio",
 				"title": {
-					"en": "Cast a website",
-					"nl": "Cast een webpagina"
+					"en": "Cast a Radio Station",
+					"nl": "Cast een Radiostation"
 				},
 				"args": [
 					{
@@ -145,10 +145,11 @@
 						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
 					},
 					{
-						"name": "url",
-						"type": "text",
+						"name": "radio_url",
+						"type": "autocomplete",
 						"placeholder": {
-							"en": "https://www.athom.com"
+							"en": "Find a Radio Station...",
+							"nl": "Zoek een Radiostation..."
 						}
 					}
 				]
@@ -170,6 +171,27 @@
 						"type": "text",
 						"placeholder": {
 							"en": "https://website.com/video.mp4"
+						}
+					}
+				]
+			},
+			{
+				"id": "castUrl",
+				"title": {
+					"en": "Cast a website",
+					"nl": "Cast een webpagina"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
+					},
+					{
+						"name": "url",
+						"type": "text",
+						"placeholder": {
+							"en": "https://www.athom.com"
 						}
 					}
 				]
@@ -415,6 +437,28 @@
 						"placeholder": {
 							"en": "Find a YouTube playlist...",
 							"nl": "Zoek een YouTube afspeellijst..."
+						}
+					}
+				]
+			},
+			{
+				"id": "castRadio",
+				"title": {
+					"en": "Cast a Radio Station",
+					"nl": "Cast een Radiostation"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "radio_url",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a Radio Station...",
+							"nl": "Zoek een Radiostation..."
 						}
 					}
 				]

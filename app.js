@@ -7,6 +7,8 @@ const YouTube = require('youtube-node');
 const getYoutubeId = require('get-youtube-id');
 const getYoutubePlaylistId = require('get-youtube-playlist-id');
 const mdns = require('mdns-js');
+const TuneIn = require('node-tunein');
+const tuneIn = new TuneIn();
 
 const maxSearchResults = 5;
 
@@ -42,7 +44,8 @@ class App extends events.EventEmitter {
 
 		Homey.manager('flow')
 			.on('action.castYouTube.youtube_id.autocomplete', this._onFlowActionCastYouTubeAutocomplete.bind(this))
-			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this._onFlowActionCastYouTubePlaylistAutocomplete.bind(this));
+			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this._onFlowActionCastYouTubePlaylistAutocomplete.bind(this))
+			.on('action.castRadio.radio_url.autocomplete', this._onFlowActionCastRadioAutocomplete.bind(this));
 
 		/*
 		 Discovery
@@ -101,6 +104,7 @@ class App extends events.EventEmitter {
 		]).then((results) => {
 			callback(null, [].concat.apply([], results));
 		}).catch((err) => {
+			console.log('YouTubeAutocomplete error', err.message, err.stack);
 			callback(err);
 		});
 	}
@@ -153,6 +157,33 @@ class App extends events.EventEmitter {
 		]).then((results) => {
 			callback(null, [].concat.apply([], results));
 		}).catch((err) => {
+			console.log('YouTubePlaylistAutocomplete error', err.message, err.stack);
+			callback(err);
+		});
+
+	}
+
+	_onFlowActionCastRadioAutocomplete(callback, args) {
+
+		(args.query === '' ? tuneIn.browse('local') : tuneIn.search(args.query)).then((result) => {
+
+			const items = [];
+			for (const item of (args.query === '' ? (((result.body || [])[0] || {}).children || []) : (result.body || []))) {
+				if (item.item === 'station' && item.URL && item.URL.href) {
+					items.push({
+						url: item.URL.href,
+						name: item.text,
+						image: item.image
+					});
+					if (items.length === 10) {
+						break;
+					}
+				}
+			}
+
+			callback(null, items);
+		}).catch((err) => {
+			console.log('CastRadioAutocomplete error', err.message, err.stack);
 			callback(err);
 		});
 
