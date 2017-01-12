@@ -3,14 +3,8 @@
 const request = require('request');
 
 const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
-const Browser = require('castv2-athom-browser').Browser;
 
 const Driver = require('../../lib/Driver.js');
-
-if (process.env.DEBUG) {
-	console.log('[Warning] Running Debug Browser receiver');
-	Browser.APP_ID = '57F7BD22';
-}
 
 class DriverChromecast extends Driver {
 
@@ -25,7 +19,6 @@ class DriverChromecast extends Driver {
 		 Flow
 		 */
 		Homey.manager('flow')
-			.on('action.castUrl', this._onFlowActionCastUrl.bind(this))
 			.on('action.castVideo', this._onFlowActionCastVideo.bind(this));
 	}
 
@@ -39,16 +32,6 @@ class DriverChromecast extends Driver {
 		if (device instanceof Error) return callback(device);
 
 		this.castVideo(device, args.url, callback)
-	}
-
-	_onFlowActionCastUrl(callback, args) {
-		this.log('_onFlowActionCastUrl');
-
-		let device = this.getDevice(args.chromecast);
-		if (device instanceof Error) return callback(device);
-
-		this.castUrl(device, args.url, callback)
-
 	}
 
 	castVideo(device, videoUrl, callback) {
@@ -79,16 +62,6 @@ class DriverChromecast extends Driver {
 			});
 		});
 
-	}
-
-	castUrl(device, url, callback) {
-		this.log('_onFlowActionStop');
-
-		this.getApplication(device, Browser).then((browser) => {
-			browser.redirect(this.sanitizeUrl(url), callback);
-		}).catch(err => {
-			callback(err || new Error('Could not cast url'));
-		});
 	}
 }
 

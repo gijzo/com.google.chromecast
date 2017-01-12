@@ -1,7 +1,7 @@
 {
 	"id": "com.google.chromecast",
-	"version": "2.1.0",
-	"compatibility": ">=1.0.0",
+	"version": "2.1.1",
+	"compatibility": ">=1.0.1",
 	"category": "video",
 	"name": {
 		"en": "Google Chromecast",
@@ -480,6 +480,31 @@
 						"type": "text",
 						"placeholder": {
 							"en": "https://website.com/audio.mp3"
+						}
+					}
+				]
+			},
+			{
+				"id": "castUrl",
+				"title": {
+					"en": "Cast a website",
+					"nl": "Cast een webpagina"
+				},
+				"hint": {
+					"en": "Open a webpage on your Chromecast Audio. Note that if you open an url with video/audio content it will only work if it plays automatically",
+					"nl": "Open een webpagina op de Chromecast Audio. Let op dat wanneer je een video/audio url opent dit alleen werkt wanneer deze automatisch begint met afspelen."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "url",
+						"type": "text",
+						"placeholder": {
+							"en": "https://www.athom.com"
 						}
 					}
 				]

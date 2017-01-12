@@ -18,6 +18,7 @@ class App extends events.EventEmitter {
 		super();
 
 		this.init = this._onInit.bind(this);
+		this.debounceMap = new Map();
 	}
 
 	/*
@@ -43,9 +44,9 @@ class App extends events.EventEmitter {
 		this._youTube.addParam('type', 'video');
 
 		Homey.manager('flow')
-			.on('action.castYouTube.youtube_id.autocomplete', this._onFlowActionCastYouTubeAutocomplete.bind(this))
-			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this._onFlowActionCastYouTubePlaylistAutocomplete.bind(this))
-			.on('action.castRadio.radio_url.autocomplete', this._onFlowActionCastRadioAutocomplete.bind(this));
+			.on('action.castYouTube.youtube_id.autocomplete', this.debounce(this._onFlowActionCastYouTubeAutocomplete.bind(this), 1500))
+			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this.debounce(this._onFlowActionCastYouTubePlaylistAutocomplete.bind(this), 1500))
+			.on('action.castRadio.radio_url.autocomplete', this.debounce(this._onFlowActionCastRadioAutocomplete.bind(this), 500));
 
 		/*
 		 Discovery
@@ -55,6 +56,14 @@ class App extends events.EventEmitter {
 			.on('ready', this._onBrowserReady.bind(this))
 			.on('update', this._onBrowserUpdate.bind(this));
 
+	}
+
+	debounce(fn, timeout){
+		const self = this;
+		return function debouncedCall() {
+			clearTimeout(self.debounceMap.get(fn));
+			self.debounceMap.set(fn, setTimeout(() => fn.apply(self, arguments), timeout));
+		}
 	}
 
 	_onFlowActionCastYouTubeAutocomplete(callback, args) {
@@ -140,7 +149,6 @@ class App extends events.EventEmitter {
 				this._youTube.search(args.query, maxSearchResults, { type: 'playlist' }, (err, result) => {
 					if (err) return reject(err);
 
-					console.log('playlists', result);
 					const playlists = result.items.map((playlist) => {
 						return {
 							id: playlist.id.playlistId,
