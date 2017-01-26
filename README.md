@@ -10,7 +10,6 @@ If flows don't work after re-pairing please try to power cycle your chromecast d
 ####v2.1.0
 Added support for Chromecast Audio Groups<br/>
 You can now cast radio stations
-
 ####v2.0.10
 Added support for Chromecast enabled devices<br/>
 Fixed bug where some Chromecast would not be able to cast Youtube videos<br/>

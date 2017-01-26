@@ -40,6 +40,9 @@
 			},
 			"class": "speaker",
 			"capabilities": [
+				"speaker_playing",
+				"speaker_prev",
+				"speaker_next",
 				"volume_mute",
 				"volume_set"
 			],
@@ -68,6 +71,9 @@
 			},
 			"class": "speaker",
 			"capabilities": [
+				"speaker_playing",
+				"speaker_prev",
+				"speaker_next",
 				"volume_mute",
 				"volume_set"
 			],

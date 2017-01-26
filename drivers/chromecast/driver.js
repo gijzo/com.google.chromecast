@@ -31,7 +31,7 @@ class DriverChromecast extends Driver {
 		let device = this.getDevice(args.chromecast);
 		if (device instanceof Error) return callback(device);
 
-		this.castVideo(device, args.url, callback)
+		this.castVideo(device, args.url, callback);
 	}
 
 	castVideo(device, videoUrl, callback) {
