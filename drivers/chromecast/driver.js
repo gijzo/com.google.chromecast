@@ -28,7 +28,7 @@ class DriverChromecast extends Driver {
 	_onFlowActionCastVideo(callback, args) {
 		this.log('_onFlowActionCastVideo');
 
-		let device = this.getDevice(args.chromecast);
+		const device = this.getDevice(args.chromecast);
 		if (device instanceof Error) return callback(device);
 
 		this.castVideo(device, args.url, callback);
@@ -43,7 +43,10 @@ class DriverChromecast extends Driver {
 			if (err) return callback(err);
 			if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
 
-			this.getApplication(device, DefaultMediaReceiver).then((player) => {
+			this.getApplication(device, DefaultMediaReceiver).then((result) => {
+				const player = result.app;
+				const disconnect = result.disconnect;
+
 				player.load(
 					{
 						contentId: url,
@@ -53,6 +56,7 @@ class DriverChromecast extends Driver {
 						autoplay: true,
 					},
 					(err) => {
+						disconnect();
 						if (err) return callback(err);
 						callback();
 					}
