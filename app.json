@@ -1,6 +1,6 @@
 {
 	"id": "com.google.chromecast",
-	"version": "2.2.1",
+	"version": "2.2.2",
 	"compatibility": ">=1.2.0",
 	"category": "video",
 	"name": {
@@ -199,117 +199,6 @@
 						"placeholder": {
 							"en": "https://www.athom.com"
 						}
-					}
-				]
-			},
-			{
-				"id": "setVolume",
-				"title": {
-					"en": "Set volume",
-					"nl": "Zet volume"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					},
-					{
-						"name": "level",
-						"type": "range",
-						"min": 0,
-						"max": 1,
-						"step": 0.01,
-						"labelMultiplier": 100,
-						"label": "%",
-						"placeholder": {
-							"en": "Volume level",
-							"nl": "Volume niveau"
-						}
-					}
-				]
-			},
-			{
-				"id": "mute",
-				"title": {
-					"en": "Mute",
-					"nl": "Geluid dempen"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "unmute",
-				"title": {
-					"en": "Unmute",
-					"nl": "Geluid aan"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "play",
-				"title": {
-					"en": "Play",
-					"nl": "Speel af"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "pause",
-				"title": {
-					"en": "Pause",
-					"nl": "Pauzeer"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "previous",
-				"title": {
-					"en": "Previous video",
-					"nl": "Vorige video"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
-					}
-				]
-			},
-			{
-				"id": "next",
-				"title": {
-					"en": "Next video",
-					"nl": "Volgende video"
-				},
-				"args": [
-					{
-						"name": "chromecast",
-						"type": "device",
-						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast"
 					}
 				]
 			},
