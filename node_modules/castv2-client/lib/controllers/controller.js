@@ -29,7 +29,9 @@ Controller.prototype.send = function(data) {
 };
 
 Controller.prototype.close = function() {
-	this.channel.close();
+	if (this.channel) {
+		this.channel.close();
+	}
 };
 
 module.exports = Controller;
