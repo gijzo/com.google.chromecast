@@ -6,6 +6,8 @@ const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
 
 const Driver = require('../../lib/Driver.js');
 
+const getYoutubeId = require('get-youtube-id');
+
 class DriverChromecast extends Driver {
 
 	constructor() {
@@ -39,9 +41,15 @@ class DriverChromecast extends Driver {
 
 		const url = this.sanitizeUrl(videoUrl);
 
-		request(url, { method: 'HEAD', timeout: 2000 }, (err, res) => {
-			if (err) return callback(err);
-			if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
+		// Check if we're dealing with a Youtube URL and respond accordingly
+		let youtubeId = getYoutubeId(url);
+
+		if(youtubeId) {
+			this.castYoutube(device, youtubeId, callback);
+		} else {
+			request(url, { method: 'HEAD', timeout: 2000 }, (err, res) => {
+				if (err) return callback(err);
+				if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
 
 			this.getApplication(device, DefaultMediaReceiver).then((result) => {
 				const player = result.app;
