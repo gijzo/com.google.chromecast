@@ -2,6 +2,7 @@
 Cast a YouTube video, a regular video/audio url or a webpage to your Chromecast device via flows.
 
 # Homey Music (compatible with Homey v1.2.0 and higher)
+**Note. To let Homey use your chromecast as a speaker a re-pair is required. Please delete your chromecast device in Homey and add it again.**
 Chromecast now also supports Homey Music! This makes it possible to play playlists from Homey Media to your Chromecast. 
 Features of this app in combination with Homey Media include:
 Play tracks from the Google Play Music/Soundcloud app to Chromecast
