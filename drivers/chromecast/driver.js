@@ -44,36 +44,37 @@ class DriverChromecast extends Driver {
 		// Check if we're dealing with a Youtube URL and respond accordingly
 		let youtubeId = getYoutubeId(url);
 
-		if(youtubeId) {
+		if (youtubeId) {
 			this.castYoutube(device, youtubeId, callback);
 		} else {
 			request(url, { method: 'HEAD', timeout: 2000 }, (err, res) => {
 				if (err) return callback(err);
 				if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
 
-			this.getApplication(device, DefaultMediaReceiver).then((result) => {
-				const player = result.app;
-				const disconnect = result.disconnect;
+				this.getApplication(device, DefaultMediaReceiver).then((result) => {
+					const player = result.app;
+					const disconnect = result.disconnect;
 
-				player.load(
-					{
-						contentId: url,
-						contentType: res.headers['content-type'],
-					},
-					{
-						autoplay: true,
-					},
-					(err) => {
-						disconnect();
-						if (err) return callback(err);
-						callback();
-					}
-				);
-			}).catch(err => {
-				callback(err || new Error('Could not cast url'));
+					player.load(
+						{
+							contentId: url,
+							contentType: res.headers['content-type'],
+						},
+						{
+							autoplay: true,
+						},
+						(err) => {
+							disconnect();
+							if (err) return callback(err);
+							callback();
+						}
+					);
+				}).catch(err => {
+					callback(err || new Error('Could not cast url'));
+				});
 			});
-		});
 
+		}
 	}
 }
 

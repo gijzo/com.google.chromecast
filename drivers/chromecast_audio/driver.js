@@ -64,15 +64,6 @@ class DriverChromecastAudio extends Driver {
 			});
 		});
 	}
-
-	_onFlowActionCastAudio(callback, args) {
-		this.log('_onFlowActionCastAudio');
-
-		const device = this.getDevice(args.chromecast);
-		if (device instanceof Error) return;
-
-		this.castUrl(device, args.url, callback);
-	}
 }
 
 module.exports = (new DriverChromecastAudio());

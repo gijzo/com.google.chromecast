@@ -10,6 +10,9 @@ Play mixed source playlists from Homey Music
 
 ##What's new
 
+####v3.0.0
+Stable version of the chromecast app with Homey Music support. This version requires you to re-pair your chromecast devices when coming from version 2.1.0 or lower to use them as active speaker in Homey Music.
+
 ####v2.2.4
 Fixed some radio stations not being able to cast, Thanks to kerkenit for the fix!
 Fixed cast video url flow card to be able to cast url's from the youtube app tag, Thanks to MarvinSchenkel for the fix!
