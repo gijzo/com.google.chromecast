@@ -2,14 +2,14 @@
 
 const Driver = require('../../lib/Driver.js');
 
-class DriverChromecast extends Driver {
+class DriverChromecastEnabledDevice extends Driver {
 
 	constructor() {
 		super();
 
-		this._id = 'chromecast';
-		this._txtMd = ['Chromecast', 'Chromecast Ultra'];
-		// this._txtMdBlacklist = ['Google Cast Group', 'Chromecast Audio'];
+		this._id = 'chromecast_enabled_device';
+		this._txtMd = false; // Disable whitelist and use blacklist instead.
+		this._txtMdBlacklist = ['Google Cast Group', 'Chromecast Audio', 'Chromecast', 'Chromecast Ultra'];
 
 		/*
 		 Flow
@@ -31,4 +31,4 @@ class DriverChromecast extends Driver {
 	}
 }
 
-module.exports = (new DriverChromecast());
+module.exports = (new DriverChromecastEnabledDevice());

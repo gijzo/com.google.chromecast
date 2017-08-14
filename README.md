@@ -10,6 +10,10 @@ Play mixed source playlists from Homey Music
 
 ##What's new
 
+####v3.1.0
+Added new device entry "Chromecast Enabled Device" where all chromecast enabled devices are listed which are not chromecast-audio or chromecast-video.
+Before these devices would be listed alongside the chromecast-video devices.
+
 ####v3.0.0
 Stable version of the chromecast app with Homey Music support. This version requires you to re-pair your chromecast devices when coming from version 2.1.0 or lower to use them as active speaker in Homey Music.
 
