@@ -7,3 +7,4 @@ env.json
 /node_modules/hawk/images/
 /node_modules/hawk/example/
 /node_modules/hawk/test/
+/demo.js

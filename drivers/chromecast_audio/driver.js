@@ -25,7 +25,7 @@ class DriverChromecastAudio extends Driver {
 	_onFlowActionCastAudio(callback, args) {
 		this.log('_onFlowActionCastAudio');
 
-		let device = this.getDevice(args.chromecast);
+		const device = this.getDevice(args.chromecast);
 		if (device instanceof Error) return callback(device);
 
 		this.castUrl(device, args.url, callback);
@@ -40,7 +40,10 @@ class DriverChromecastAudio extends Driver {
 			if (err) return callback(err);
 			if (!res.headers || res.statusCode !== 200) return callback(new Error('Invalid request from url'));
 
-			this.getApplication(device, DefaultMediaReceiver).then((player) => {
+			this.getApplication(device, DefaultMediaReceiver).then((result) => {
+				const player = result.app;
+				const disconnect = result.disconnect;
+
 				player.load(
 					{
 						contentId: url,
@@ -51,6 +54,7 @@ class DriverChromecastAudio extends Driver {
 					},
 					(err) => {
 						console.log('castUrl', err);
+						disconnect();
 						if (err) return callback(err);
 						callback();
 					}
@@ -59,15 +63,6 @@ class DriverChromecastAudio extends Driver {
 				callback(err || new Error('Could not cast url'));
 			});
 		});
-	}
-
-	_onFlowActionCastAudio(callback, args) {
-		this.log('_onFlowActionCastAudio');
-
-		let device = this.getDevice(args.chromecast);
-		if (device instanceof Error) return;
-
-		this.castUrl(device, args.url, callback);
 	}
 }
 

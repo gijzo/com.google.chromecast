@@ -1,11 +1,25 @@
 #Chromecast for Homey
-Cast a YouTube video, a regular video/audio url or a webpage to your Chromecast device.
+Cast a YouTube video, a regular video/audio url or a webpage to your Chromecast device via flows.
 
-**Note. this is a rewrite of the original Chromecast app and is based on the CastV2 API. 
-This means that you need to re-pair your chromecast devices after updating to this app.<br/>
-If flows don't work after re-pairing please try to power cycle your chromecast device.**
+# Homey Music (compatible with Homey v1.2.0 and higher)
+**Note. To let Homey use your Chromecast as a speaker a re-pair is required. Please delete your Chromecast device in Homey and add it again.**
+Chromecast now also supports Homey Music! This makes it possible to play playlists from Homey Media to your Chromecast. 
+Features of this app in combination with Homey Media include:
+Play tracks from the Google Play Music/Soundcloud app to Chromecast
+Play mixed source playlists from Homey Music
 
 ##What's new
+
+####v3.0.0
+Stable version of the chromecast app with Homey Music support. This version requires you to re-pair your chromecast devices when coming from version 2.1.0 or lower to use them as active speaker in Homey Music.
+
+####v2.2.4
+Fixed some radio stations not being able to cast, Thanks to kerkenit for the fix!
+Fixed cast video url flow card to be able to cast url's from the youtube app tag, Thanks to MarvinSchenkel for the fix!
+
+####v2.2.0
+Added support for Homey Media
+Various bug fixes
 
 ####v2.1.0
 Added support for Chromecast Audio Groups<br/>

@@ -9,6 +9,7 @@ const getYoutubePlaylistId = require('get-youtube-playlist-id');
 const mdns = require('mdns-js');
 const TuneIn = require('node-tunein');
 const tuneIn = new TuneIn();
+const DISCOVER_TIMEOUT = 5 * 60 * 1000;
 
 const maxSearchResults = 5;
 
@@ -25,7 +26,19 @@ class App extends events.EventEmitter {
 	 Discovery
 	 */
 	_onBrowserReady() {
-		this._browser.discover();
+		this._discover();
+	}
+
+	_discover() {
+		clearTimeout(this._discoverTimeout);
+		this._discoverTimeout = setTimeout(
+			() => {
+				this._browser.discover();
+				this._discover_timeout = Math.min(this._discover_timeout * 1.5, DISCOVER_TIMEOUT);
+				this._discover();
+			},
+			this._discover_timeout
+		);
 	}
 
 	_onBrowserUpdate(device) {
@@ -51,6 +64,7 @@ class App extends events.EventEmitter {
 		/*
 		 Discovery
 		 */
+		this._discover_timeout = DISCOVER_TIMEOUT / 60;
 		this._browser = mdns.createBrowser(mdns.tcp('googlecast'));
 		this._browser
 			.on('ready', this._onBrowserReady.bind(this))
@@ -58,7 +72,7 @@ class App extends events.EventEmitter {
 
 	}
 
-	debounce(fn, timeout){
+	debounce(fn, timeout) {
 		const self = this;
 		return function debouncedCall() {
 			clearTimeout(self.debounceMap.get(fn));

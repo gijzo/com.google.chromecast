@@ -39,6 +39,7 @@ PlatformSender.prototype.connect = function(options, callback) {
     }
 
     function onclose() {
+      self.emit('close');
       self.heartbeat.stop();
       self.receiver.removeListener('status', onstatus);
       self.receiver.close();
@@ -98,6 +99,8 @@ PlatformSender.prototype.launch = function(Application, callback) {
       return session.appId === Application.APP_ID;
     });
     var session = filtered.shift();
+
+    if(!session) return callback(new Error('Could not launch session'));
 
     self.join(session, Application, callback);
   });
