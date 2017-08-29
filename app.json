@@ -1,8 +1,8 @@
 {
 	"id": "com.google.chromecast",
-	"version": "3.0.1",
+	"version": "3.1.0",
 	"compatibility": ">=1.2.0",
-	"category": "video",
+	"category": ["video", "music"],
 	"name": {
 		"en": "Google Chromecast",
 		"nl": "Google Chromecast"
@@ -68,6 +68,37 @@
 			"images": {
 				"large": "./drivers/chromecast_audio/assets/images/large.jpg",
 				"small": "./drivers/chromecast_audio/assets/images/small.jpg"
+			},
+			"class": "speaker",
+			"capabilities": [
+				"speaker_playing",
+				"speaker_prev",
+				"speaker_next",
+				"volume_mute",
+				"volume_set"
+			],
+			"pair": [
+				{
+					"id": "list_chromecasts",
+					"template": "list_devices",
+					"navigation": {
+						"next": "add_chromecasts"
+					}
+				},
+				{
+					"id": "add_chromecasts",
+					"template": "add_devices"
+				}
+			]
+		},
+		{
+			"id": "chromecast_enabled_device",
+			"name": {
+				"en": "Chromecast Enabled Device"
+			},
+			"images": {
+				"large": "./drivers/chromecast_enabled_device/assets/images/large.png",
+				"small": "./drivers/chromecast_enabled_device/assets/images/small.png"
 			},
 			"class": "speaker",
 			"capabilities": [
@@ -582,6 +613,204 @@
 						"name": "chromecast",
 						"type": "device",
 						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_audio"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On",
+									"nl": "Aan"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off",
+									"nl": "Uit"
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"id": "castYouTube",
+				"title": {
+					"en": "Cast a YouTube video",
+					"nl": "Cast een YouTube video"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_enabled_device"
+					},
+					{
+						"name": "youtube_id",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a YouTube video...",
+							"nl": "Zoek een YouTube video..."
+						}
+					}
+				]
+			},
+			{
+				"id": "castYouTubePlaylist",
+				"title": {
+					"en": "Cast a YouTube playlist",
+					"nl": "Cast een YouTube playlist"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_enabled_device"
+					},
+					{
+						"name": "youtube_playlist_id",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a YouTube playlist...",
+							"nl": "Zoek een YouTube afspeellijst..."
+						}
+					}
+				]
+			},
+			{
+				"id": "castRadio",
+				"title": {
+					"en": "Cast a Radio Station",
+					"nl": "Cast een Radiostation"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_enabled_device"
+					},
+					{
+						"name": "radio_url",
+						"type": "autocomplete",
+						"placeholder": {
+							"en": "Find a Radio Station...",
+							"nl": "Zoek een Radiostation..."
+						}
+					}
+				]
+			},
+			{
+				"id": "castVideo",
+				"title": {
+					"en": "Cast a video URL",
+					"nl": "Cast een video URL"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_enabled_device"
+					},
+					{
+						"name": "url",
+						"type": "text",
+						"placeholder": {
+							"en": "https://website.com/video.mp4"
+						}
+					}
+				]
+			},
+			{
+				"id": "castUrl",
+				"title": {
+					"en": "Cast a website",
+					"nl": "Cast een webpagina"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_enabled_device"
+					},
+					{
+						"name": "url",
+						"type": "text",
+						"placeholder": {
+							"en": "https://www.athom.com"
+						}
+					}
+				]
+			},
+			{
+				"id": "stop",
+				"title": {
+					"en": "Stop",
+					"nl": "Stop"
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_enabled_device"
+					}
+				]
+			},
+			{
+				"id": "shuffle",
+				"title": {
+					"en": "Set Shuffle",
+					"nl": "Zet Shuffle"
+				},
+				"hint": {
+					"en": "Set YouTube playlists to shuffle videos. This setting will apply to all future YouTube playlists.",
+					"nl": "Zet YouTube afspeellijsten op shuffle. Deze instelling zal worden toegepast op alle toekomstige YouTube afspeellijsten die worden afgespeeld."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_enabled_device"
+					},
+					{
+						"name": "state",
+						"type": "dropdown",
+						"values": [
+							{
+								"id": "on",
+								"label": {
+									"en": "On",
+									"nl": "Aan"
+								}
+							},
+							{
+								"id": "off",
+								"label": {
+									"en": "Off",
+									"nl": "Uit"
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"id": "loop",
+				"title": {
+					"en": "Set Loop",
+					"nl": "Zet Herhalen"
+				},
+				"hint": {
+					"en": "Set YouTube videos to loop. This setting will apply to all future YouTube videos and playlists.",
+					"nl": "Zet YouTube videos op herhalen. Deze instelling zal worden toegepast op alle toekomstige YouTube videos die worden afgespeeld."
+				},
+				"args": [
+					{
+						"name": "chromecast",
+						"type": "device",
+						"filter": "driver_uri=homey:app:com.google.chromecast&driver_id=chromecast_enabled_device"
 					},
 					{
 						"name": "state",

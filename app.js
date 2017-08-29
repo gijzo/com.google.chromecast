@@ -13,6 +13,17 @@ const DISCOVER_TIMEOUT = 5 * 60 * 1000;
 
 const maxSearchResults = 5;
 
+const STRIP_COMMENTS = /(\/\/.*$)|(\/\*[\s\S]*?\*\/)|(\s*=[^,\)]*(('(?:\\'|[^'\r\n])*')|("(?:\\"|[^"\r\n])*"))|(\s*=[^,\)]*))/mg;
+const ARGUMENT_NAMES = /([^\s,]+)/g;
+function getParamNames(func) {
+	const fnStr = func.toString().replace(STRIP_COMMENTS, '');
+	let result = fnStr.slice(fnStr.indexOf('(') + 1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
+	if (result === null) {
+		result = [];
+	}
+	return result;
+}
+
 class App extends events.EventEmitter {
 
 	constructor() {
@@ -20,6 +31,7 @@ class App extends events.EventEmitter {
 
 		this.init = this._onInit.bind(this);
 		this.debounceMap = new Map();
+		this.argumentsMap = new Map();
 	}
 
 	/*
@@ -57,9 +69,9 @@ class App extends events.EventEmitter {
 		this._youTube.addParam('type', 'video');
 
 		Homey.manager('flow')
-			.on('action.castYouTube.youtube_id.autocomplete', this.debounce(this._onFlowActionCastYouTubeAutocomplete.bind(this), 1500))
-			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this.debounce(this._onFlowActionCastYouTubePlaylistAutocomplete.bind(this), 1500))
-			.on('action.castRadio.radio_url.autocomplete', this.debounce(this._onFlowActionCastRadioAutocomplete.bind(this), 500));
+			.on('action.castYouTube.youtube_id.autocomplete', this.debounce(this._onFlowActionCastYouTubeAutocomplete, 1500))
+			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this.debounce(this._onFlowActionCastYouTubePlaylistAutocomplete, 1500))
+			.on('action.castRadio.radio_url.autocomplete', this.debounce(this._onFlowActionCastRadioAutocomplete, 500));
 
 		/*
 		 Discovery
@@ -73,11 +85,28 @@ class App extends events.EventEmitter {
 	}
 
 	debounce(fn, timeout) {
-		const self = this;
-		return function debouncedCall() {
-			clearTimeout(self.debounceMap.get(fn));
-			self.debounceMap.set(fn, setTimeout(() => fn.apply(self, arguments), timeout));
-		}
+		return (function () {
+			if (this.debounceMap.has(fn)) {
+				const debounceFn = this.debounceMap.get(fn);
+				clearTimeout(debounceFn.timeout);
+				if (debounceFn.callback) {
+					debounceFn.callback(new Error('debounced'));
+				}
+			}
+			let argNames = this.argumentsMap.get(fn);
+			if (!argNames) {
+				argNames = getParamNames(fn);
+				this.argumentsMap.set(fn, argNames);
+			}
+			const callbackIndex = argNames.indexOf('callback');
+			this.debounceMap.set(
+				fn,
+				setTimeout(
+					() => console.log('arguments', arguments) & fn.apply(this, arguments),
+					{ timeout, callback: callbackIndex !== -1 ? arguments[callbackIndex] : null }
+				)
+			);
+		}).bind(this);
 	}
 
 	_onFlowActionCastYouTubeAutocomplete(callback, args) {
@@ -123,7 +152,7 @@ class App extends events.EventEmitter {
 
 					resolve(videos);
 				});
-			})
+			}),
 		]).then((results) => {
 			callback(null, [].concat.apply([], results));
 		}).catch((err) => {
@@ -175,7 +204,7 @@ class App extends events.EventEmitter {
 
 					resolve(playlists);
 				});
-			})
+			}),
 		]).then((results) => {
 			callback(null, [].concat.apply([], results));
 		}).catch((err) => {
@@ -195,7 +224,7 @@ class App extends events.EventEmitter {
 					items.push({
 						url: item.URL.href,
 						name: item.text,
-						image: item.image
+						image: item.image,
 					});
 					if (items.length === 10) {
 						break;
