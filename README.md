@@ -10,7 +10,7 @@ Play mixed source playlists from Homey Music
 
 ## What's new
 
-####v 3.1.0
+#### v3.1.0
 Added new device entry "Chromecast Enabled Device" where all chromecast enabled devices are listed which are not chromecast-audio or chromecast-video.
 Before these devices would be listed alongside the chromecast-video devices.
 
