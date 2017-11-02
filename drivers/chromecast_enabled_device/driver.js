@@ -27,7 +27,7 @@ class DriverChromecastEnabledDevice extends Driver {
 		const device = this.getDevice(args.chromecast);
 		if (device instanceof Error) return callback(device);
 
-		this.castMediaUrl(device, args.url, callback);
+		this.castMediaUrl(device, args.url.trim(), callback);
 	}
 }
 
