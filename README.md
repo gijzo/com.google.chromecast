@@ -1,4 +1,4 @@
-#Chromecast for Homey
+# Chromecast for Homey
 Cast a YouTube video, a regular video/audio url or a webpage to your Chromecast device via flows.
 
 # Homey Music (compatible with Homey v1.2.0 and higher)
@@ -9,6 +9,14 @@ Play tracks from the Google Play Music/Soundcloud app to Chromecast
 Play mixed source playlists from Homey Music
 
 ## What's new
+
+#### v3.1.2
+Sanitize spaces when casting a website
+fix formatting in readme
+
+#### v3.1.1
+Sanitize spaces when casting a video URL
+fix formatting in readme
 
 #### v3.1.0
 Added new device entry "Chromecast Enabled Device" where all chromecast enabled devices are listed which are not chromecast-audio or chromecast-video.
