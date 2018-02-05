@@ -13,6 +13,10 @@ Play mixed source playlists from Homey Music
 #### v3.1.2
 Fixed bug where the Cast video/audio url flow card would throw a "invalid_device" error
 
+#### v3.1.1
+Sanitize spaces when casting a video URL
+fix formatting in readme
+
 #### v3.1.0
 Added new device entry "Chromecast Enabled Device" where all chromecast enabled devices are listed which are not chromecast-audio or chromecast-video.
 Before these devices would be listed alongside the chromecast-video devices.
