@@ -1,14 +1,14 @@
 'use strict';
 
-const events = require('events');
-
-const logger = require('homey-log').Log;
 const YouTube = require('youtube-node');
 const getYoutubeId = require('get-youtube-id');
 const getYoutubePlaylistId = require('get-youtube-playlist-id');
 const mdns = require('mdns-js');
 const TuneIn = require('node-tunein');
 const tuneIn = new TuneIn();
+
+const Homey = require('homey');
+
 const DISCOVER_TIMEOUT = 5 * 60 * 1000;
 
 const maxSearchResults = 5;
@@ -24,21 +24,22 @@ function getParamNames(func) {
 	return result;
 }
 
-class App extends events.EventEmitter {
+process.on('unhandledRejection', r => console.log('test', r, new Error()));
 
-	constructor() {
-		super();
-
-		this.init = this._onInit.bind(this);
-		this.debounceMap = new Map();
-		this.argumentsMap = new Map();
-	}
+module.exports = class App extends Homey.App {
 
 	/*
 	 Discovery
 	 */
 	_onBrowserReady() {
-		this._discover();
+		let drivers = Homey.ManagerDrivers.getDrivers();
+		if (!Array.isArray(drivers)) {
+			drivers = Object.values(drivers);
+		}
+
+		Promise.all(
+			drivers.map(driver => new Promise(res => driver.ready(res)))
+		).then(() => this._discover());
 	}
 
 	_discover() {
@@ -60,18 +61,20 @@ class App extends events.EventEmitter {
 	/*
 	 Generic
 	 */
-	_onInit() {
+	onInit() {
+		this.log(`${Homey.manifest.id} running...`);
 
-		console.log(`${Homey.manifest.id} running...`);
+		this.debounceMap = new Map();
+		this.argumentsMap = new Map();
 
 		this._youTube = new YouTube();
 		this._youTube.setKey(Homey.env.YOUTUBE_KEY);
 		this._youTube.addParam('type', 'video');
 
-		Homey.manager('flow')
-			.on('action.castYouTube.youtube_id.autocomplete', this.debounce(this._onFlowActionCastYouTubeAutocomplete, 1500))
-			.on('action.castYouTubePlaylist.youtube_playlist_id.autocomplete', this.debounce(this._onFlowActionCastYouTubePlaylistAutocomplete, 1500))
-			.on('action.castRadio.radio_url.autocomplete', this.debounce(this._onFlowActionCastRadioAutocomplete, 500));
+		this.onFlowActionCastYouTubeAutocomplete = this.debounce(this._onFlowActionCastYouTubeAutocomplete, 1500);
+		this.onFlowActionCastYouTubePlaylistAutocomplete = this.debounce(this._onFlowActionCastYouTubePlaylistAutocomplete, 1500);
+		this.onFlowActionCastRadioAutocomplete = this.debounce(this._onFlowActionCastRadioAutocomplete, 500);
+
 
 		/*
 		 Discovery
@@ -85,160 +88,146 @@ class App extends events.EventEmitter {
 	}
 
 	debounce(fn, timeout) {
-		return (function () {
-			if (this.debounceMap.has(fn)) {
-				const debounceFn = this.debounceMap.get(fn);
-				clearTimeout(debounceFn.timeout);
-				if (debounceFn.callback) {
-					debounceFn.callback(new Error('debounced'));
+		let rejectPending;
+
+		return ((...args) => {
+			return new Promise((resolve, reject) => {
+				if (rejectPending) {
+					rejectPending(new Error('debounced'));
 				}
-			}
-			let argNames = this.argumentsMap.get(fn);
-			if (!argNames) {
-				argNames = getParamNames(fn);
-				this.argumentsMap.set(fn, argNames);
-			}
-			const callbackIndex = argNames.indexOf('callback');
-			this.debounceMap.set(
-				fn,
-				setTimeout(
-					() => console.log('arguments', arguments) & fn.apply(this, arguments),
-					{ timeout, callback: callbackIndex !== -1 ? arguments[callbackIndex] : null }
-				)
-			);
-		}).bind(this);
+
+				const debounceTimeout = setTimeout(() => {
+					rejectPending = null;
+					resolve(fn.apply(this, args));
+				}, timeout);
+
+				rejectPending = (err) => {
+					clearTimeout(debounceTimeout);
+					reject(err);
+				};
+			});
+		});
 	}
 
-	_onFlowActionCastYouTubeAutocomplete(callback, args) {
-
-		Promise.all([
+	_onFlowActionCastYouTubeAutocomplete(query) {
+		return Promise.all([
 			new Promise((resolve, reject) => {
-				const youtubeId = getYoutubeId(args.query);
+				const youtubeId = getYoutubeId(query);
 				if (youtubeId) {
 					this._youTube.getById(youtubeId, (err, result) => {
 						if (err) return reject(err);
 
 						const videos = result.items
 							.filter((item) => item.kind === 'youtube#video')
-							.map((video) => {
-								return {
-									id: video.id.videoId,
-									name: video.snippet.title,
-									image: video.snippet && video.snippet.thumbnails && video.snippet.thumbnails.default ?
-										video.snippet.thumbnails.default.url :
-										undefined,
-								};
-							});
+							.map((video) => ({
+								id: video.id.videoId,
+								name: video.snippet.title,
+								image: video.snippet && video.snippet.thumbnails && video.snippet.thumbnails.default ?
+									video.snippet.thumbnails.default.url :
+									undefined,
+							}));
 
 						resolve(videos);
-					})
+					});
 				} else {
 					resolve([]);
 				}
 			}),
 			new Promise((resolve, reject) => {
-				this._youTube.search(args.query, maxSearchResults, { type: 'video' }, (err, result) => {
+				this._youTube.search(query, maxSearchResults, { type: 'video' }, (err, result) => {
 					if (err) return reject(err);
 
-					const videos = result.items.map((video) => {
-						return {
-							id: video.id.videoId,
-							name: video.snippet.title,
-							image: video.snippet && video.snippet.thumbnails && video.snippet.thumbnails.default ?
-								video.snippet.thumbnails.default.url :
-								undefined,
-						};
-					});
+					const videos = result.items.map((video) => ({
+						id: video.id.videoId,
+						name: video.snippet.title,
+						image: video.snippet && video.snippet.thumbnails && video.snippet.thumbnails.default ?
+							video.snippet.thumbnails.default.url :
+							undefined,
+					}));
 
 					resolve(videos);
 				});
 			}),
-		]).then((results) => {
-			callback(null, [].concat.apply([], results));
-		}).catch((err) => {
-			console.log('YouTubeAutocomplete error', err.message, err.stack);
-			callback(err);
-		});
+		])
+			.then((results) => [].concat.apply([], results))
+			.catch((err) => {
+				this.error('YouTubeAutocomplete error', err.message, err.stack);
+				return Promise.reject(err);
+			});
 	}
 
-	_onFlowActionCastYouTubePlaylistAutocomplete(callback, args) {
-
-		Promise.all([
+	_onFlowActionCastYouTubePlaylistAutocomplete(query) {
+		return Promise.all([
 			new Promise((resolve, reject) => {
-				const youtubePlaylistId = getYoutubePlaylistId(args.query);
+				const youtubePlaylistId = getYoutubePlaylistId(query);
 				if (youtubePlaylistId) {
 					this._youTube.getPlayListsById(youtubePlaylistId, (err, result) => {
 						if (err) return reject(err);
 
 						const playlists = result.items
 							.filter((item) => item.kind === 'youtube#playlist')
-							.map((playlist) => {
-								return {
-									id: playlist.id,
-									name: playlist.snippet.title,
-									image: playlist.snippet && playlist.snippet.thumbnails && playlist.snippet.thumbnails.default ?
-										playlist.snippet.thumbnails.default.url :
-										undefined,
-								};
-							});
+							.map((playlist) => ({
+								id: playlist.id,
+								name: playlist.snippet.title,
+								image: playlist.snippet && playlist.snippet.thumbnails && playlist.snippet.thumbnails.default ?
+									playlist.snippet.thumbnails.default.url :
+									undefined,
+							}));
 
 						resolve(playlists);
-					})
+					});
 				} else {
 					resolve([]);
 				}
 			}),
 			new Promise((resolve, reject) => {
-				this._youTube.search(args.query, maxSearchResults, { type: 'playlist' }, (err, result) => {
+				this._youTube.search(query, maxSearchResults, { type: 'playlist' }, (err, result) => {
 					if (err) return reject(err);
 
-					const playlists = result.items.map((playlist) => {
-						return {
-							id: playlist.id.playlistId,
-							name: playlist.snippet.title,
-							image: playlist.snippet && playlist.snippet.thumbnails && playlist.snippet.thumbnails.default ?
-								playlist.snippet.thumbnails.default.url :
-								undefined,
-						};
-					});
+					const playlists = result.items.map((playlist) => ({
+						id: playlist.id.playlistId,
+						name: playlist.snippet.title,
+						image: playlist.snippet && playlist.snippet.thumbnails && playlist.snippet.thumbnails.default ?
+							playlist.snippet.thumbnails.default.url :
+							undefined,
+					}));
 
 					resolve(playlists);
 				});
 			}),
-		]).then((results) => {
-			callback(null, [].concat.apply([], results));
-		}).catch((err) => {
-			console.log('YouTubePlaylistAutocomplete error', err.message, err.stack);
-			callback(err);
-		});
+		])
+			.then((results) => [].concat.apply([], results))
+			.catch((err) => {
+				this.error('YouTubePlaylistAutocomplete error', err.message, err.stack);
+				return Promise.reject(err);
+			});
 
 	}
 
-	_onFlowActionCastRadioAutocomplete(callback, args) {
+	_onFlowActionCastRadioAutocomplete(query) {
+		return (query === '' ? tuneIn.browse('local') : tuneIn.search(query))
+			.then((result) => {
+				const results = (query === '' ? (((result.body || [])[0] || {}).children || []) : (result.body || []));
 
-		(args.query === '' ? tuneIn.browse('local') : tuneIn.search(args.query)).then((result) => {
-
-			const items = [];
-			for (const item of (args.query === '' ? (((result.body || [])[0] || {}).children || []) : (result.body || []))) {
-				if (item.item === 'station' && item.URL && item.URL.href) {
-					items.push({
-						url: item.URL.href,
-						name: item.text,
-						image: item.image,
-					});
-					if (items.length === 10) {
-						break;
+				const items = [];
+				for (const item of results) {
+					if (item.item === 'station' && item.URL && item.URL.href) {
+						items.push({
+							url: item.URL.href,
+							name: item.text,
+							image: item.image,
+						});
+						if (items.length === 10) {
+							break;
+						}
 					}
 				}
-			}
 
-			callback(null, items);
-		}).catch((err) => {
-			console.log('CastRadioAutocomplete error', err.message, err.stack);
-			callback(err);
-		});
-
+				return items;
+			})
+			.catch((err) => {
+				this.error('CastRadioAutocomplete error', err.message, err.stack);
+				return Promise.reject(err);
+			});
 	}
-}
-
-module.exports = new App();
+};

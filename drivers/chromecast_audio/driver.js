@@ -1,18 +1,22 @@
 'use strict';
 
-const Driver = require('../../lib/Driver.js');
+const Homey = require('homey');
+const Driver = require('../../lib/ChromecastDriver.js');
 
-class DriverChromecastAudio extends Driver {
+module.exports = class ChromecastAudioDriver extends Driver {
 
-	constructor() {
-		super();
-
-		this._id = 'chromecast_audio';
+	onInit() {
 		this._txtMd = ['Google Cast Group', 'Chromecast Audio'];
 		// this._txtMdBlacklist = ['Chromecast', 'Chromecast Ultra'];
 
-		Homey.manager('flow')
-			.on('action.castAudio', this._onFlowActionCastAudio.bind(this));
+		super.onInit();
+
+		/*
+		 Flow
+		 */
+		this._flowActionCastAudio = new Homey.FlowCardAction('castAudio')
+			.register()
+			.registerRunListener(this._onFlowActionCastAudio.bind(this));
 	}
 
 	/*
@@ -21,11 +25,6 @@ class DriverChromecastAudio extends Driver {
 	_onFlowActionCastAudio(callback, args) {
 		this.log('_onFlowActionCastAudio');
 
-		const device = this.getDevice(args.chromecast);
-		if (device instanceof Error) return;
-
-		this.castMediaUrl(device, args.url.trim(), callback);
+		return args.chromecast.castMediaUrl(args.url.trim());
 	}
-}
-
-module.exports = (new DriverChromecastAudio());
+};

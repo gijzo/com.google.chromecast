@@ -1,34 +1,30 @@
 'use strict';
 
-const Driver = require('../../lib/Driver.js');
+const Homey = require('homey');
+const Driver = require('../../lib/ChromecastDriver.js');
 
-class DriverChromecastEnabledDevice extends Driver {
+module.exports = class ChromecastEnabledDeviceDriver extends Driver {
 
-	constructor() {
-		super();
-
-		this._id = 'chromecast_enabled_device';
+	onInit() {
 		this._txtMd = false; // Disable whitelist and use blacklist instead.
 		this._txtMdBlacklist = ['Google Cast Group', 'Chromecast Audio', 'Chromecast', 'Chromecast Ultra'];
+
+		super.onInit();
 
 		/*
 		 Flow
 		 */
-		Homey.manager('flow')
-			.on('action.castVideo', this._onFlowActionCastVideo.bind(this));
+		this._flowActionCastVideo = new Homey.FlowCardAction('castVideo')
+			.register()
+			.registerRunListener(this._onFlowActionCastVideo.bind(this));
 	}
 
 	/*
 	 Flow
 	 */
-	_onFlowActionCastVideo(callback, args) {
+	_onFlowActionCastVideo(args) {
 		this.log('_onFlowActionCastVideo');
 
-		const device = this.getDevice(args.chromecast);
-		if (device instanceof Error) return;
-
-		this.castMediaUrl(device, args.url.trim(), callback);
+		return args.chromecast.castMediaUrl(args.url.trim());
 	}
-}
-
-module.exports = (new DriverChromecastEnabledDevice());
+};
