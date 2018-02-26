@@ -10,6 +10,10 @@ Play mixed source playlists from Homey Music
 
 ## What's new
 
+#### v4.0.0
+Initial release of the SDK2 rewrite. 
+Note that this update does not try to fix the bug some users experience where the screen will be black with two white lines. We are unable to reproduce/debug this bug until now.
+
 #### v3.1.2
 Fixed bug where the Cast video/audio url flow card would throw a "invalid_device" error
 
